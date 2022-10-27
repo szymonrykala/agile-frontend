@@ -1,26 +1,58 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import * as React from 'react';
+import { GlobalStyles } from '@mui/system';
+import { CssVarsProvider } from '@mui/joy/styles';
+import type { Theme } from '@mui/joy/styles';
 
-function App() {
+
+import SideNav from './components/SideNav'
+import teamTheme from './theme';
+import Layout from './components/Layout';
+import Teams from './components/Teams';
+import Header from './components/Header';
+
+
+
+export default function TeamExample() {
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <CssVarsProvider disableTransitionOnChange theme={teamTheme}>
+      <GlobalStyles<Theme>
+        styles={(theme) => ({
+          body: {
+            margin: 0,
+            fontFamily: theme.vars.fontFamily.body,
+          },
+        })}
+      />
+
+      {drawerOpen && (
+        <Layout.SideDrawer onClose={() => setDrawerOpen(false)}>
+          <SideNav />
+        </Layout.SideDrawer>
+      )}
+
+      <Layout.Root
+        sx={{
+          ...(drawerOpen && {
+            height: '100vh',
+            overflow: 'hidden',
+          }),
+        }}
+      >
+        <Layout.Header>
+          <Header setDrawerOpen={setDrawerOpen} />
+        </Layout.Header>
+
+        <Layout.SideNav>
+          <SideNav />
+        </Layout.SideNav>
+
+        <Layout.Main>
+          <Teams />
+        </Layout.Main>
+
+      </Layout.Root>
+    </CssVarsProvider>
   );
 }
-
-export default App;
