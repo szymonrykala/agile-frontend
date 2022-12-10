@@ -16,20 +16,18 @@ import Link from '@mui/joy/Link'
 
 // Icons import
 import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
+import Project from '../../../models/project';
 
 
 
-interface ITeamItem {
+interface IProjectItem {
     index: React.Key
-}
-
-const data = {
-    name: "Team X",
-    description: "Best team in the world"
+    data: Project
 }
 
 
-export default function TeamItem(props: ITeamItem) {
+
+export default function ProjectItem(props: IProjectItem) {
 
     return (
         <Sheet
@@ -45,7 +43,7 @@ export default function TeamItem(props: ITeamItem) {
         >
             <Box sx={{ display: 'flex', gap: 2 }}>
                 <Avatar
-                    title={data.name}
+                    title={props.data.name}
                     // src="https://i.pravatar.cc/40?img=6"
                     // srcSet="https://i.pravatar.cc/80?img=6 2x"
                     sx={{ borderRadius: 'sm' }}
@@ -53,24 +51,24 @@ export default function TeamItem(props: ITeamItem) {
                 <Box>
                     <Typography>
                         <Link href='#team-tab'>
-                            {data.name}
+                            {props.data.name}
                         </Link>
                     </Typography>
-                    <Typography level="body3">{data.description}</Typography>
+                    <Typography level="body3">{props.data.description}</Typography>
                 </Box>
             </Box>
 
             <ListDivider component="div" sx={{ my: 2 }} />
 
 
-            <List>
+            {/* <List>
                 {
                     [
                         { id: "a4a-34", title: "Fix somethin very importatnt someone broke smth agn" },
                         { id: "a4a-32", title: "Implement heartbreaking feature" },
-                        { id: "a4a-34", title: "Fix somethin very importatnt" },
+                        { id: "a4a-31", title: "Fix somethin very importatnt" },
                     ].map(({ title, id }) =>
-                        <ListItem key={id} sx={{ alignItems: 'flex-start' }}>
+                        <ListItem key={`${id}-l`} sx={{ alignItems: 'flex-start' }}>
                             <ListItemContent>
                                 <Typography level="body2" sx={{
                                     textOverflow: "ellipsis",
@@ -93,7 +91,7 @@ export default function TeamItem(props: ITeamItem) {
                     )
                 }
 
-            </List>
+            </List> */}
 
             <Button
                 size="sm"
@@ -111,9 +109,9 @@ export default function TeamItem(props: ITeamItem) {
 
             <List sx={{ flexDirection: 'row' }}>
                 {
-                    ["Dawid Dojczman", "Filip Nowicki", "Szymon Rykała"].map((user, id) =>
-                        <ListItem key={id} sx={{ alignItems: 'flex-start' }}>
-                            <Tooltip title={user}>
+                    props.data.users.map(({firstname, lastname}, id) =>
+                        <ListItem key={`${id}-u`} sx={{ alignItems: 'flex-start' }}>
+                            <Tooltip title={`${firstname} ${lastname}`}>
                                 <ListItemButton component='a' href='#action'>
                                     <Avatar
                                         size="sm"

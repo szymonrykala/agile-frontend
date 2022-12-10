@@ -7,12 +7,12 @@ import type { Theme } from '@mui/joy/styles';
 import SideNav from './components/SideNav'
 import teamTheme from './theme';
 import Layout from './components/Layout';
-import Teams from './components/Teams';
 import Header from './components/Header';
 
+import { Outlet } from 'react-router-dom';
 
 
-export default function TeamExample() {
+export default function App() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   return (
@@ -49,10 +49,17 @@ export default function TeamExample() {
         </Layout.SideNav>
 
         <Layout.Main>
-          <Teams />
-        </Layout.Main>
 
+          {/* 
+            Here the content of router will be displayed and switched 
+            - instead of <Outlet/>
+          */}
+          <Outlet />
+
+        </Layout.Main>
       </Layout.Root>
-    </CssVarsProvider>
+
+
+    </CssVarsProvider >
   );
 }
