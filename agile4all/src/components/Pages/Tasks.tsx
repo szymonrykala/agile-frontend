@@ -6,6 +6,7 @@ import { Outlet } from "react-router";
 import { mockProject } from "../../mockData/projects";
 import useTasksListLoader from "../Tasks/useTasksListLoader";
 import Project from "../../models/project";
+import FilterBar from "../FilterBar";
 
 
 
@@ -44,6 +45,7 @@ export default function Tasks() {
     return (
         <>
             <Outlet />
+            <FilterBar/>
             <List>
                 {
                     mockedProjects.map((project, index) =>
