@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import { StyledEngineProvider } from '@mui/joy/styles';
+import store from './store'
+import { Provider } from 'react-redux'
 
 import {
-  createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
 import AppRouter from './AppRouter';
@@ -21,7 +21,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
-      <RouterProvider router={AppRouter} />
+      <Provider store={store}>
+        <RouterProvider router={AppRouter} />
+      </Provider>
     </StyledEngineProvider>
   </React.StrictMode>
 );

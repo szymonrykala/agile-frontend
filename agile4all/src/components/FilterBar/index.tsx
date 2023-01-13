@@ -1,4 +1,4 @@
-import { Chip, Sheet } from "@mui/joy";
+import { Sheet } from "@mui/joy";
 import React from "react";
 import FilterItem from "./FilterItem";
 
@@ -42,7 +42,7 @@ export default function FilterBar() {
                 filters.map((filter, index) =>
                     <FilterItem
                         onClick={() => filterClickHandle(index)}
-                        clicked={clicked == index}
+                        clicked={clicked === index}
                         name={filter.name}
                         key={filter.key}
                     />)

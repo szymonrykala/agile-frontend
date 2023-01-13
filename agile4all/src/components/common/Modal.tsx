@@ -1,6 +1,6 @@
-import { Card, CardContent, Modal as JoyModal, ModalClose, Sheet } from '@mui/joy';
+import { Card, Modal as JoyModal, ModalClose } from '@mui/joy';
 import { SxProps } from '@mui/joy/styles/types';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface IModal {

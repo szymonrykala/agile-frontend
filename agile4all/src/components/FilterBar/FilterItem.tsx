@@ -1,5 +1,4 @@
-import { Button, Chip } from "@mui/joy";
-import React from "react";
+import { Button } from "@mui/joy";
 
 
 interface IFilterItem {
@@ -11,10 +10,6 @@ interface IFilterItem {
 
 
 export default function FilterItem(props: IFilterItem) {
-    // const [clicked, setClicked] = React.useState<boolean>(props.clicked || false)
-
-    // const clickHandle = () => setClicked(!clicked)
-
     return (
         <Button
             variant={props.clicked ? "soft" : "outlined"}

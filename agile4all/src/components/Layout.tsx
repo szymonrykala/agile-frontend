@@ -154,7 +154,7 @@ function SideDrawer({
   );
 }
 
-export default {
+const layout = {
   Root,
   Header,
   SideNav,
@@ -162,3 +162,5 @@ export default {
   SideDrawer,
   Main,
 };
+
+export default layout

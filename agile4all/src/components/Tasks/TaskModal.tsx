@@ -1,12 +1,11 @@
 import Modal from "../common/Modal";
-import { Badge, Button, Card, Chip, Divider, IconButton, Option, Select, Sheet, Typography } from "@mui/joy";
+import { Divider, IconButton, Option, Select, Sheet, Typography } from "@mui/joy";
 import { TaskStatus } from "../../models/task";
 import Link from "../common/Link";
 import StatusChip from "./StatusChip";
 import NamedAvatar from "./NamedAvatar";
 import { ReactNode } from "react";
 import DescriptionIcon from '@mui/icons-material/Description';
-import { AddCircleOutlined } from "@mui/icons-material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import UploadIcon from '@mui/icons-material/Upload';
 
