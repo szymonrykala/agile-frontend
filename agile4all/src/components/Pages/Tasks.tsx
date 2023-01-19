@@ -10,6 +10,8 @@ import { useCallback, useEffect } from "react";
 import { TasksApi } from '../../client';
 import Task from "../../models/task";
 import React from "react";
+import { useAppSelector } from "../../hooks";
+import { UUID } from "../../models/common";
 
 
 const mockedProjects = new Array(2).fill(0).map(_ => mockProject())
@@ -17,10 +19,13 @@ const mockedProjects = new Array(2).fill(0).map(_ => mockProject())
 
 
 interface IProjectListItem {
-    data: Project
+    project: {
+        name: string,
+        id: UUID
+    }
 }
 
-function ProjectTasksListItem({ data }: IProjectListItem) {
+function ProjectTasksListItem({project}: IProjectListItem) {
     const { userId } = useParams();
     const [tasks, setTasks] = React.useState<Task[]>([]);
 
@@ -43,7 +48,6 @@ function ProjectTasksListItem({ data }: IProjectListItem) {
             setTasks([]);
         }
     }, [
-        data.id,
         getTasks,
     ])
 
@@ -52,8 +56,8 @@ function ProjectTasksListItem({ data }: IProjectListItem) {
         <CollapsibleListItem
             open={true}
             header={
-                <Link to={`/projects/${data.id}`}>
-                    {data.name}
+                <Link to={`/projects/${project.id}`}>
+                    {project.name}
                 </Link>
             }
         >
@@ -64,6 +68,7 @@ function ProjectTasksListItem({ data }: IProjectListItem) {
 
 
 export default function Tasks() {
+    const projects = useAppSelector(({ session }) => session?.projects);
 
     return (
         <>
@@ -71,8 +76,8 @@ export default function Tasks() {
             <FilterBar />
             <List>
                 {
-                    mockedProjects.map((project, index) =>
-                        <ProjectTasksListItem data={project} key={index} />
+                    projects && projects.map((project, index) =>
+                        <ProjectTasksListItem project={project} key={index} />
                     )
                 }
             </List>

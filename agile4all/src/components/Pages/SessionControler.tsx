@@ -33,7 +33,9 @@ function SessionController(props: ISessionController) {
         return () => {
             dispatch(removeSession())
         }
-    }, [checkCurrentSession])
+    // there is no need to check session on each route change    
+    // eslint-disable-next-line react-hooks/exhaustive-deps    
+    }, [dispatch, removeSession])
 
     return props.element
 }
