@@ -1,4 +1,4 @@
-import { DataModel } from "./common"
+import { DataModel, UUID } from "./common"
 
 export enum UserRole {
     STUDENT = 'STUDENT',
@@ -10,6 +10,14 @@ interface User extends DataModel{
     firstname: string,
     lastname: string,
     role: UserRole
+}
+
+export interface Session {
+    user: User,
+    projects: {
+        name: string,
+        id: UUID
+    }[]
 }
 
 export default User
