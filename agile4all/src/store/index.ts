@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import projectSlice from './projectSlice';
+import sessionSlice from './sessionSlice';
 import taskSlice from './taskSlice';
 import usersSlice from './usersSlice';
 
@@ -9,6 +10,7 @@ const store = configureStore({
     tasks: taskSlice,
     projects: projectSlice,
     users: usersSlice,
+    session: sessionSlice
   },
 })
 
