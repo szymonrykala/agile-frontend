@@ -5,7 +5,6 @@ import ProjectItem from "../Projects/ProjectItem";
 
 const projects = new Array(3).fill(mockProject());
 
-console.log(projects)
 
 export default function Projects() {
     return (
@@ -17,7 +16,7 @@ export default function Projects() {
             }}
         >
             {
-                projects.map((item, index) => <ProjectItem data={item} index={index} />)
+                projects.map((item, index) => <ProjectItem data={item} index={index} key={index} />)
             }
         </List>
     )
