@@ -1,32 +1,73 @@
-import Layout from '../Layout';
-import Header from '../Header';
-
+import { Input, Typography } from '@mui/joy';
+import { useCallback, useState } from 'react';
+import BasePage from '../common/BasePage';
+import FormWrapper from '../common/FormWrapper';
+import { Link, useNavigate } from "react-router-dom";
+import { ILoginData } from '../../client/users';
+import { UsersApi } from '../../client';
+import { BadCredentialsError } from '../../client/exceptions';
 
 
 function Login() {
-    return <>
-        <Layout.Root
-            sx={{
-                ...({
-                    height: '100vh',
-                    overflow: 'hidden',
-                }),
-            }}
+    const navigate = useNavigate();
+
+    const [error, setError] = useState<string | undefined>();
+    const [data, setData] = useState<ILoginData>({
+        email: '',
+        password: ''
+    });
+
+
+    const submitLogin: React.FormEventHandler<HTMLFormElement> = useCallback((event) => {
+        setError(undefined)
+        try {
+            UsersApi.login(data)
+            navigate('/')
+        } catch (error) {
+            if (error instanceof BadCredentialsError) {
+                setError(error.message)
+            }
+        }
+    }, [navigate, setError, data])
+
+
+    return <BasePage sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100'
+    }}>
+        <FormWrapper
+            submitHandler={submitLogin}
+            title='Login'
+            sx={{ transform: 'translateY(-10vh)' }}
+            error={error}
+            footer={
+                <Typography component={Link} to='/register' color='primary'>
+                    Create an account
+                </Typography>
+            }
         >
-            <Layout.Header>
-                <Header />
-            </Layout.Header>
-
-            <Layout.Main>
-                logowanie
-
-
-            </Layout.Main>
-        </Layout.Root>
-    </>
+            <Input
+                autoFocus
+                required
+                placeholder='email'
+                type='email'
+                value={data.email}
+                onChange={(evt) => setData({ ...data, email: evt.target.value })}
+            />
+            <Input
+                required
+                placeholder='password'
+                type='password'
+                value={data.password}
+                onChange={(evt) => setData({ ...data, password: evt.target.value })}
+            />
+        </FormWrapper>
+    </BasePage >
 }
 
-export default Login
+export default Login;
 
 
 

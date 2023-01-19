@@ -1,21 +1,28 @@
 import { UUID } from "../models/common"
 import { Session, UserRole } from "../models/user"
 import ApiClient from "./ApiClient"
-import { NoValidUserSessionError } from "./exceptions"
+import { BadCredentialsError, NoValidUserSessionError, UserRegistrationError } from "./exceptions"
 
 
-interface ICreateUserData {
-    firstname: string,
-    lastname: string,
+export interface ILoginData {
     email: string,
-    password: string,
-    role: UserRole
+    password: string
 }
 
-interface IUpdateUserData {
+export interface ICreateUserData extends ILoginData{
+    firstname: string,
+    lastname: string,
+}
+
+export interface IUpdateUserData {
     firstName: string,
     lastName: string,
     role: UserRole
+}
+
+interface ILoginResponse{
+    token: string,
+    userId: UUID
 }
 
 
@@ -44,6 +51,32 @@ export default class UsersClient
             } catch (error) {
                 console.error(error)
                 throw new NoValidUserSessionError()
+            }
+        }
+
+        async login(data: ILoginData){
+            try {
+                const resp = await this._post('/auth',data) as ILoginResponse;
+    
+                this.authToken = resp.token
+                this.saveUserId(resp.userId)
+                return true
+            } catch (error) {
+                console.debug(error)
+                if(true){
+                    throw new BadCredentialsError()
+                }
+            }
+        }
+
+        async register(data: ICreateUserData){
+            try{
+                await this._post('/users', data)
+            } catch (error) {
+                console.debug(error)
+                if(true){
+                    throw new UserRegistrationError()
+                }
             }
         }
 }

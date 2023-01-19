@@ -12,7 +12,7 @@ import { Dispatch, SetStateAction } from 'react';
 
 
 interface IHeader {
-    setDrawerOpen: Dispatch<SetStateAction<boolean>>
+    setDrawerOpen?: Dispatch<SetStateAction<boolean>>
 }
 
 
@@ -27,14 +27,14 @@ export default function Header(props: IHeader) {
                     gap: 1.5,
                 }}
             >
-                <IconButton
+                {props.setDrawerOpen && <IconButton
                     variant="outlined"
                     size="sm"
-                    onClick={() => props.setDrawerOpen(true)}
+                    onClick={() => props.setDrawerOpen && props.setDrawerOpen(true)}
                     sx={{ display: { sm: 'none' } }}
                 >
                     <MenuIcon />
-                </IconButton>
+                </IconButton>}
                 <IconButton
                     size="sm"
                     variant="solid"

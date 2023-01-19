@@ -3,8 +3,6 @@ import Link from "../common/Link";
 import TaskCard from "../Tasks/TaskCard";
 import CollapsibleListItem from "../common/CollapsibleListItem";
 import { Outlet, useParams } from "react-router";
-import { mockProject } from "../../mockData/projects";
-import Project from "../../models/project";
 import FilterBar from "../FilterBar";
 import { useCallback, useEffect } from "react";
 import { TasksApi } from '../../client';
@@ -12,9 +10,6 @@ import Task from "../../models/task";
 import React from "react";
 import { useAppSelector } from "../../hooks";
 import { UUID } from "../../models/common";
-
-
-const mockedProjects = new Array(2).fill(0).map(_ => mockProject())
 
 
 
