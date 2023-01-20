@@ -18,11 +18,12 @@ function Login() {
     });
 
 
-    const submitLogin: React.FormEventHandler<HTMLFormElement> = useCallback((event) => {
+    const submitLogin: React.FormEventHandler<HTMLFormElement> = useCallback(async (event) => {
         setError(undefined)
         try {
-            UsersApi.login(data)
-            navigate('/')
+            if(await UsersApi.login(data)){
+                navigate(`/app`)
+            }
         } catch (error) {
             if (error instanceof BadCredentialsError) {
                 setError(error.message)

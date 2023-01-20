@@ -7,6 +7,7 @@ import IconButton from '@mui/joy/IconButton';
 import Divider from '@mui/joy/Divider';
 import ColorSchemeToggle from '../SideNav/ColorSchemeToggle';
 import { Dispatch, SetStateAction } from 'react';
+import { Link } from 'react-router-dom';
 
 
 
@@ -76,8 +77,8 @@ export default function Header(props: IHeader) {
                     size="sm"
                     variant="outlined"
                     color="danger"
-                    component="a"
-                    href="/blog/first-look-at-joy/"
+                    component={Link}
+                    to="/logout"
                 >
                     <LogoutIcon />
                 </IconButton>

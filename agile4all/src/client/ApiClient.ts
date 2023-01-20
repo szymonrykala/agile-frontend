@@ -45,6 +45,10 @@ abstract class BaseClient {
         window.localStorage.setItem(this.TOKEN_NAME, 'Bearer ' + value);
     }
 
+    public clearAuthToken() {
+        window.localStorage.removeItem(this.TOKEN_NAME);
+    }
+
     private async _fetch(fetchObject: FetchData)
         // : Promise<APIResponse> 
         : Promise<object | object[]> {

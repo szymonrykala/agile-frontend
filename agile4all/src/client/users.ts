@@ -36,8 +36,8 @@ export default class UsersClient
             localStorage.setItem(this.userIdKey,userId)
         }
 
-        getLocalUserId(){
-            
+        getSavedUserId(){
+            localStorage.getItem(this.userIdKey)
         }
 
         async readUserFromSession(){
@@ -67,6 +67,11 @@ export default class UsersClient
                     throw new BadCredentialsError()
                 }
             }
+        }
+
+        logout(){
+            this.clearAuthToken()
+            localStorage.removeItem(this.userIdKey)
         }
 
         async register(data: ICreateUserData){

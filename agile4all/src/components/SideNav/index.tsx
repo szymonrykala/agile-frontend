@@ -9,6 +9,8 @@ import PeopleRoundedIcon from '@mui/icons-material/PeopleRounded';
 import AssignmentIndRoundedIcon from '@mui/icons-material/AssignmentIndRounded';
 import HomeIcon from '@mui/icons-material/HomeRounded';
 import { Link, useLocation, useResolvedPath } from 'react-router-dom';
+import { useMemo } from 'react';
+import { useAppSelector } from '../../hooks';
 
 
 const clicked = {
@@ -16,30 +18,33 @@ const clicked = {
   color: "primary"
 }
 
-const links = [
-  {
-    name: 'Tasks',
-    link: '/users/id_of_the_user',
-    Icon: HomeIcon
-  }, {
-    name: 'Projects',
-    link: '/projects',
-    Icon: AssignmentIndRoundedIcon
-  }, {
-    name: 'Users',
-    link: '/users',
-    Icon: PeopleRoundedIcon
-  },{
-    name: 'Chat',
-    link: '/chat',
-    Icon: PeopleRoundedIcon
-  },
-]
 
 
 export default function SideNav() {
   const loc = useLocation();
   const path = useResolvedPath(loc);
+  const currentSessionUserId = useAppSelector(({ session }) => session?.user.id)
+
+
+  const links = useMemo(() => [
+    {
+      name: 'Tasks',
+      link: `/app/users/${currentSessionUserId}/tasks`,
+      Icon: HomeIcon
+    }, {
+      name: 'Projects',
+      link: '/app/projects',
+      Icon: AssignmentIndRoundedIcon
+    }, {
+      name: 'Users',
+      link: '/app/users',
+      Icon: PeopleRoundedIcon
+    }, {
+      name: 'Chat',
+      link: '/app/chat',
+      Icon: PeopleRoundedIcon
+    },
+  ], [currentSessionUserId]);
 
   return (
     <List size="sm" sx={{ '--List-item-radius': '8px' }}>

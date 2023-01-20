@@ -9,13 +9,14 @@ import TaskModal from "./components/Tasks/TaskModal";
 import Login from "./components/Pages/Login";
 import Registration from "./components/Pages/Registration";
 import SessionController from "./components/Pages/SessionControler";
+import Logout from "./components/Pages/Logout";
 
 
 
 const AppRouter = createBrowserRouter([
   {
     path: "/",
-    element: <SessionController element={<Outlet />} />,
+    element: <SessionController element={<Outlet/>}/>,
     errorElement: null,
     children: [
       {
@@ -23,19 +24,27 @@ const AppRouter = createBrowserRouter([
         element: <Login />
       },
       {
+        path: 'logout',
+        element: <Logout />
+      },
+      {
         path: 'register',
         element: <Registration />
       },
       {
-        path: '',
-        element: <App />,
+        path: 'app',
+        element: <SessionController element={<App />}/>,
         children: [
           {
-            path: 'users/:userId',
+            index:true,
+            element: <Tasks />
+          },
+          {
+            path: 'users/:userId/tasks',
             element: <Tasks />,
             children: [
               {
-                path: 'tasks/:taskid',
+                path: ':taskId',
                 element: <TaskModal />
               }
             ]
@@ -53,6 +62,8 @@ const AppRouter = createBrowserRouter([
       },
     ]
   },
-]);
+],{
+  basename: process.env.REACT_APP_BASE_URL
+});
 
 export default AppRouter;
