@@ -15,6 +15,7 @@ const statusesMap = {
 export default function StatusChip(props: IStatusChip) {
     return (
         <Chip
+            component='span'
             size="sm"
             color={statusesMap[props.status] as any}
         >

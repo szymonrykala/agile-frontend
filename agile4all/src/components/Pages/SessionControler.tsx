@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { UsersApi } from "../../client";
 import { NoValidUserSessionError } from "../../client/exceptions";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { removeSession, setSession } from "../../store/sessionSlice";
+import { setSession } from "../../store/sessionSlice";
 
 
 interface ISessionController {
@@ -28,6 +28,8 @@ function SessionController(props: ISessionController) {
                 navigate('/login')
             } else throw e
         }
+        // there is no need to check session on each route change    
+        // eslint-disable-next-line react-hooks/exhaustive-deps    
     }, [dispatch, isSessionSet])
 
     React.useEffect(() => {
@@ -36,8 +38,9 @@ function SessionController(props: ISessionController) {
         // return () => {
             // dispatch(removeSession())
         // }
-        // there is no need to check session on each route change    
-        // eslint-disable-next-line react-hooks/exhaustive-deps    
+
+    // there is no need to check session on each route change    
+    // eslint-disable-next-line react-hooks/exhaustive-deps    
     }, [])
 
     return props.element

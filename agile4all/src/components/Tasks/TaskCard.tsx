@@ -29,7 +29,7 @@ export default function TaskCard({ data }: ITaskCard) {
                 maxWidth='250px'
                 marginBottom={1}
             >
-                <Link to={`/users/${data.userId}/tasks/${data.id}`}>
+                <Link to={`${data.id}`}>
                     {data.id.slice(-5,-1)}-
                 </Link>
                 {data.title}
@@ -44,7 +44,7 @@ export default function TaskCard({ data }: ITaskCard) {
                 {data.description}
             </Typography>
             <Link sx={{ fontSize: '0.9rem' }}
-                to={`/users/${data.userId}/tasks/${data.id}`}
+                to={`${data.id}`}
             >more...</Link>
         </Card>
     )

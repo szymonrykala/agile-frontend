@@ -14,11 +14,11 @@ const filters = [
     },
     {
         name: 'project id',
-        key: 'projectId'
+        key: 'projectIduhb'
     },
     {
         name: 'user id',
-        key: 'userId'
+        key: 'userIdokjn'
     }
 ]
 
