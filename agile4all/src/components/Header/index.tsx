@@ -8,16 +8,23 @@ import Divider from '@mui/joy/Divider';
 import ColorSchemeToggle from '../SideNav/ColorSchemeToggle';
 import { Dispatch, SetStateAction } from 'react';
 import { Link } from 'react-router-dom';
+import { Session } from '../../models/user';
+import MessageIcon from '@mui/icons-material/Message';
+import { useChatContext } from '../Chat/Context';
 
 
 
 
 interface IHeader {
     setDrawerOpen?: Dispatch<SetStateAction<boolean>>
+    session: Session | null
 }
 
 
 export default function Header(props: IHeader) {
+    const { chatOpen, toggleChat } = useChatContext();
+
+
     return (
         <>
             <Box
@@ -71,17 +78,26 @@ export default function Header(props: IHeader) {
             <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1.5 }}>
                 <ColorSchemeToggle />
 
-                <Divider />
+                {props.session && <>
+                    <IconButton
+                        variant={chatOpen ? 'soft' : 'outlined'}
+                        onClick={toggleChat}
+                    >
+                        <MessageIcon />
+                    </IconButton>
 
-                <IconButton
-                    size="sm"
-                    variant="outlined"
-                    color="danger"
-                    component={Link}
-                    to="/logout"
-                >
-                    <LogoutIcon />
-                </IconButton>
+                    <Divider />
+                    <IconButton
+                        size="sm"
+                        variant="outlined"
+                        color="danger"
+                        component={Link}
+                        to="/logout"
+                    >
+                        <LogoutIcon />
+                    </IconButton>
+                </>
+                }
             </Box>
         </>
     );

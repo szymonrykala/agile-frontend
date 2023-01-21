@@ -37,7 +37,7 @@ export default class UsersClient
         }
 
         getSavedUserId(){
-            localStorage.getItem(this.userIdKey)
+            return localStorage.getItem(this.userIdKey)
         }
 
         async readUserFromSession(){

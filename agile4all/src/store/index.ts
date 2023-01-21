@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
+import chatSlice from './chatSlice';
 import projectSlice from './projectSlice';
 import sessionSlice from './sessionSlice';
 import taskSlice from './taskSlice';
@@ -10,7 +11,8 @@ const store = configureStore({
     tasks: taskSlice,
     projects: projectSlice,
     users: usersSlice,
-    session: sessionSlice
+    session: sessionSlice,
+    chat: chatSlice
   },
 })
 

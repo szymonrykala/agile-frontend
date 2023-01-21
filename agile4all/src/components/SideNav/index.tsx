@@ -39,11 +39,7 @@ export default function SideNav() {
       name: 'Users',
       link: '/app/users',
       Icon: PeopleRoundedIcon
-    }, {
-      name: 'Chat',
-      link: '/app/chat',
-      Icon: PeopleRoundedIcon
-    },
+    }
   ], [currentSessionUserId]);
 
   return (

@@ -22,7 +22,7 @@ function BasePage({ children, sx }: IBasePage) {
             }}
         >
             <Layout.Header>
-                <Header />
+                <Header session={null} />
             </Layout.Header>
 
             <Layout.Main sx={sx}>
