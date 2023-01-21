@@ -5,7 +5,7 @@ interface File extends DataModel{
     name: string,
     link: string,
     userId: UUID,
-    modificationDate: Date
+    modificationDate: string
 }
 
 export default File

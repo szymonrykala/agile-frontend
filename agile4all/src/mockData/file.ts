@@ -8,6 +8,6 @@ export function mockFile():File{
         link: "https://app.swaggerhub.com/apis",
         name: "analiza buga.txt",
         userId: uuid(),
-        modificationDate: new Date()
+        modificationDate: new Date().toLocaleDateString()
     }
 }
