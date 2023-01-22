@@ -1,4 +1,4 @@
-import { Sheet, IconButton, Link } from "@mui/joy";
+import { Sheet, IconButton, Link, Typography } from "@mui/joy";
 import DescriptionIcon from '@mui/icons-material/Description';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import FileModel from "../../models/file";
@@ -17,6 +17,9 @@ export default function File({ data, onDelete }: IFile) {
             sx={{
                 position: 'relative',
                 bgcolor: 'inherit',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
             }}
         >
             <IconButton
@@ -46,6 +49,10 @@ export default function File({ data, onDelete }: IFile) {
                     color='warning'
                 />
             </IconButton>
+            <Typography level='body3'>
+                {data.name}
+            </Typography>
+
         </Sheet>
     )
 }
