@@ -19,7 +19,7 @@ export default function Modal(props: IModal) {
             aria-describedby={props.description}
             open={true}
             onClose={() => navigate('../')}
-            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 999 }}
         >
             <Card sx={{
                 transform: 'translateY(-15%)',

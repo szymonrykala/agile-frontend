@@ -11,10 +11,11 @@ interface ITaskCard {
 export default function TaskCard({ data }: ITaskCard) {
     return (
         <Card sx={{
-            maxWidth: 'inherit'
+            maxWidth: 'inherit',
+            bgcolor: 'background.componentBg',
         }}>
             <Typography level='body2' marginBottom={1}>
-                <StatusChip status={TaskStatus.TODO} />
+                <StatusChip status={data.status} />
                 &nbsp;
                 <Link to={`/users/${data.userId}`}>
                     Assigned User
@@ -30,7 +31,7 @@ export default function TaskCard({ data }: ITaskCard) {
                 marginBottom={1}
             >
                 <Link to={`${data.id}`}>
-                    {data.id.slice(-5,-1)}-
+                    {data.id.slice(-5, -1)}-
                 </Link>
                 {data.title}
             </Typography>
