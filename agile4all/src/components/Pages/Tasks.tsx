@@ -1,4 +1,4 @@
-import { List } from "@mui/joy";
+import { IconButton, List, Sheet, Typography } from "@mui/joy";
 import Link from "../common/Link";
 import TaskCard from "../Tasks/TaskCard";
 import CollapsibleListItem from "../common/CollapsibleListItem";
@@ -7,10 +7,12 @@ import FilterBar from "../FilterBar";
 import { useCallback, useEffect } from "react";
 import { TasksApi } from '../../client';
 import Task from "../../models/task";
-import React from "react";
-import { useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { UUID } from "../../models/common";
-
+import { load } from "../../store/taskSlice";
+import AddIcon from "@mui/icons-material/Add";
+import { ICreateTaskData } from "../../client/tasks";
+import FilesPanel from "../FilesPanel";
 
 
 interface IProjectListItem {
@@ -20,31 +22,42 @@ interface IProjectListItem {
     }
 }
 
-function ProjectTasksListItem({project}: IProjectListItem) {
+function ProjectTasksListItem({ project }: IProjectListItem) {
     const { userId } = useParams();
-    const [tasks, setTasks] = React.useState<Task[]>([]);
+    const dispatch = useAppDispatch();
+    const tasks = useAppSelector(({ tasks }) => tasks);
+    const sessionUser = useAppSelector(({ session }) => session?.user)
+
 
     const getTasks = useCallback(async () => {
         try {
             const taskItems = await TasksApi.getAll({
                 'userId': userId
             })
-            setTasks(taskItems as Task[])
+            dispatch(load(taskItems as Task[]))
 
         } catch (err) {
             console.debug(err)
         }
-    }, [userId])
+    }, [userId, dispatch])
+
+
+    const createTask = useCallback(async () => {
+        const title: string = prompt('type a task title') || 'created task';
+
+        const task: ICreateTaskData = {
+            title: title,
+            description: "What needs to be done??",
+            userId: sessionUser?.id || 'unassigned'
+        }
+        await TasksApi.create(task)
+        getTasks()
+    }, [sessionUser?.id, getTasks]);
+
 
     useEffect(() => {
         getTasks()
-
-        return () => {
-            setTasks([]);
-        }
-    }, [
-        getTasks,
-    ])
+    }, [getTasks])
 
 
     return (
@@ -55,8 +68,23 @@ function ProjectTasksListItem({project}: IProjectListItem) {
                     {project.name}
                 </Link>
             }
+            footer={
+                <Sheet sx={{ bgcolor: 'inherit' }}>
+                    <Typography level="body2">
+                        Project files:
+                    </Typography>
+                    <FilesPanel files={[]} />
+                </Sheet>
+            }
         >
             {tasks.map((task, index) => <TaskCard data={task} key={index} />)}
+            <IconButton
+                onClick={createTask}
+                size='lg'
+            >
+                <AddIcon />
+            </IconButton>
+
         </CollapsibleListItem>
     )
 }

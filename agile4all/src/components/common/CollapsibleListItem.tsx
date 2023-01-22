@@ -1,4 +1,4 @@
-import { IconButton, List, ListItem, ListItemContent, Typography } from "@mui/joy";
+import { IconButton, List, ListItem, ListItemContent, ListItemDecorator, Typography } from "@mui/joy";
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import React, { ReactNode } from "react";
@@ -7,7 +7,8 @@ import React, { ReactNode } from "react";
 interface ICollapsibleListItem {
     header: ReactNode,
     children: ReactNode[],
-    open?: boolean
+    open?: boolean,
+    footer?: ReactNode,
 }
 
 
@@ -58,6 +59,9 @@ export default function CollapsibleListItem(props: ICollapsibleListItem) {
                         ))
                     }
                 </List>
+                <ListItemDecorator>
+                    {props.footer}
+                </ListItemDecorator>
             </ListItem>
         </>
     )

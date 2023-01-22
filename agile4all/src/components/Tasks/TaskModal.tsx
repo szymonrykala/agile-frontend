@@ -3,7 +3,7 @@ import { Divider, IconButton, Option, Select, Sheet, Typography } from "@mui/joy
 import Task, { TaskStatus } from "../../models/task";
 import { getStatusColor } from "./StatusChip";
 import NamedAvatar from "./NamedAvatar";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FilesPanel from "../FilesPanel";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
@@ -11,51 +11,69 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditableTextArea from "../common/EditableTextArea";
 import confirm from "../common/Confirm";
 import { UUID } from "../../models/common";
-import { useAppSelector } from "../../hooks";
-import { UsersApi } from "../../client";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { TasksApi } from "../../client";
+import { remove, update } from "../../store/taskSlice";
+import { useParams } from "react-router";
 
 
 
-const taskData = {
-    description: `bardzo wyczerpujący no i wgl mogą być linki itpfdp
-ogólnie mega dużo treści, ale i Opis taska który czasem potrafibyc
-Opis taska który czasem potrafibyc`,
-    title: `Zrobić coś takiiego suuuperrr Zrobić coś takiiego suuuperrr`,
-    id: '2354tf65y76',
-    projectId: '23r4f5y56y456',
-    status: TaskStatus.DONE,
-    userId: UsersApi.getSavedUserId()
+const demoTaskData = {
+    description: `loading...`,
+    title: `loading...`,
+    id: '001',
+    projectId: '001',
+    status: TaskStatus.ARCHIVED,
+    userId: '001'
 }
 
 
 export default function TaskModal() {
     const sessionUser = useAppSelector(({ session }) => session?.user)
     const [editMode, setEditMode] = useState<boolean>(false);
+    const dispatch = useAppDispatch();
+    const { taskId } = useParams()
+    const initTask = useAppSelector(({ tasks }) => tasks.find(({ id }) => id === taskId))
 
-    const [task, setTask] = useState<Task>(taskData);
+    const [task, setTask] = useState<Task>(initTask || demoTaskData);
+
+    useEffect(() => {
+
+    }, [])
 
     const deleteTask = useCallback(async () => {
         const proceed = await confirm('Do You want to delete this task?')
         if (!proceed) return;
 
-        console.log('delete task')
-        // api call
-    }, [])
+        await TasksApi.delete(task.id)
+        dispatch(remove(task))
+    }, [task, dispatch])
 
-    const updateTask = useCallback(() => {
+    const updateTask = useCallback(async () => {
+        if (task !== initTask) {
+            dispatch(update(task))
+            try {
+                await TasksApi.update(task.id, {
+                    description: task.description,
+                    title: task.title,
+                    status: task.status,
+                    userId: task.userId
+                })
+            } catch (err) { alert(err) }
+        }
 
-    }, [])
+    }, [task, dispatch, initTask])
 
     const updateAssignedUser = useCallback((event: any, user: UUID | null) => {
         if (!user) return;
 
         setTask({ ...task, userId: user })
-    }, [])
+    }, [task])
 
     const statusUpdate = useCallback((event: any, newStatus: TaskStatus | null) => {
-        // api call
+        // api call ??
         if (newStatus) setTask({ ...task, status: newStatus })
-    }, []);
+    }, [task]);
 
 
     return (
@@ -104,37 +122,36 @@ export default function TaskModal() {
                     </IconButton>
                 </Sheet>
             </Sheet>
-            <span>
-                <Typography component='label' level='body3'>
-                    Assigned user
-                    <Select
-                        disabled={!editMode}
-                        size="sm"
-                        value={task.userId}
-                        variant={editMode ? "soft" : 'plain'}
-                        onChange={updateAssignedUser}
-                    >
-                        {
-                            [
-                                {
-                                    id: '34656gyh67i',
-                                    email: 'firstOne@email.com'
-                                }, {
-                                    id: '4365677i',
-                                    email: 'secondOne@email.com'
-                                }, {
-                                    id: sessionUser?.id,
-                                    email: sessionUser?.email
-                                }
-                            ].map((user, index) =>
-                                <Option key={index} value={user.id}>
-                                    {user.email}
-                                </Option>
-                            )
-                        }
-                    </Select>
-                </Typography>
-            </span>
+
+            <Typography component='label' level='body3'>
+                Assigned user
+                <Select
+                    disabled={!editMode}
+                    size="sm"
+                    value={task.userId}
+                    variant={editMode ? "soft" : 'plain'}
+                    onChange={updateAssignedUser}
+                >
+                    {
+                        [
+                            {
+                                id: '34656gyh67i',
+                                email: 'firstOne@email.com'
+                            }, {
+                                id: '4365677i',
+                                email: 'secondOne@email.com'
+                            }, {
+                                id: sessionUser?.id,
+                                email: sessionUser?.email
+                            }
+                        ].map((user, index) =>
+                            <Option key={index} value={user.id}>
+                                {user.email}
+                            </Option>
+                        )
+                    }
+                </Select>
+            </Typography>
 
             <EditableTextArea
                 title="Title:"

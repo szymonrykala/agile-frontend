@@ -34,7 +34,7 @@ abstract class BaseClient {
 
     private TOKEN_NAME: string = 'auth_token'; // local storage token variable name
     // BASE_URL: string = process.env.REACT_APP_API_URL as string; // api url from env
-    private BASE_URL: string = "https://virtserver.swaggerhub.com/SZYMONRYKALA_1/agile/1.0.0"
+    protected BASE_URL: string = "https://virtserver.swaggerhub.com/SZYMONRYKALA_1/agile/1.0.0"
 
 
     protected get authToken(): string {
@@ -65,7 +65,12 @@ abstract class BaseClient {
                 body: JSON.stringify(fetchObject.body)
             }
         );
-        const data = await response.json() as ResponseData;
+        let data: ResponseData = {} as ResponseData
+        try {
+            data = await response.json() as ResponseData;
+        } catch (error) {
+            console.debug(error)
+        }
 
         if (process.env.NODE_ENV !== 'production') console.debug(data);
 
@@ -76,8 +81,9 @@ abstract class BaseClient {
         }
 
         if (!response.ok) {
-            if (process.env.NODE_ENV !== 'production') console.error(`${response.status} ${data?.error?.type} ${data?.error?.description}`);
-            throw new Error(data?.error?.description);
+            if (process.env.NODE_ENV !== 'production')
+                console.error(response);
+            throw new Error(JSON.stringify(response));
         }
 
         return data as APIResponse;

@@ -1,5 +1,5 @@
 import { Card, Typography } from "@mui/joy";
-import Task, { TaskStatus } from "../../models/task";
+import Task from "../../models/task";
 import Link from "../common/Link";
 import StatusChip from "./StatusChip";
 

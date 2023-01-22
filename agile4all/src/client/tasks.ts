@@ -1,19 +1,19 @@
-import { UserRole } from "../models/user"
+import { UUID } from "../models/common"
+import { TaskStatus } from "../models/task"
 import ApiClient from "./ApiClient"
 
 
-interface ICreateTaskData {
-    name: string,
+export interface ICreateTaskData {
+    title: string,
     description: string,
-    status: string,
-    userI: string,
-    role: UserRole
+    userId: UUID,
 }
 
-interface IUpdateTaskData {
-    firstName: string,
-    lastName: string,
-    role: UserRole
+export interface IUpdateTaskData {
+    title: string,
+    description: string,
+    userId: string,
+    status: TaskStatus
 }
 
 
