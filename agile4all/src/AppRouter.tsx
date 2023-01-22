@@ -36,10 +36,6 @@ const AppRouter = createBrowserRouter([
         element: <SessionController element={<App />}/>,
         children: [
           {
-            index:true,
-            element: <Tasks />
-          },
-          {
             path: 'users/:userId/tasks',
             element: <Tasks />,
             children: [

@@ -36,8 +36,8 @@ export default class UsersClient
             localStorage.setItem(this.userIdKey,userId)
         }
 
-        getSavedUserId(){
-            return localStorage.getItem(this.userIdKey)
+        getSavedUserId():string{
+            return localStorage.getItem(this.userIdKey) || 'unknown'
         }
 
         async readUserFromSession(){

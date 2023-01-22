@@ -18,11 +18,12 @@ function SessionController(props: ISessionController) {
 
     const checkCurrentSession = React.useCallback(async () => {
         try {
+            const userId = UsersApi.getSavedUserId();
             if (isSessionSet === false) {
                 const session = await UsersApi.readUserFromSession()
                 dispatch(setSession(session))
             }
-            navigate(`/app`)
+            navigate(`/app/users/${userId}/tasks`)
         } catch (e) {
             if (e instanceof NoValidUserSessionError) {
                 navigate('/login')
