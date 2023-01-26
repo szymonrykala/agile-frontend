@@ -4,16 +4,16 @@ import { Button } from "@mui/joy";
 interface IFilterItem {
     clicked?: boolean,
     onClick: () => void,
-    name: string,
-    key: string
+    name: string
 }
 
 
-export default function FilterItem(props: IFilterItem) {
+export default function FilterItem<T>(props: IFilterItem) {
     return (
         <Button
             variant={props.clicked ? "soft" : "outlined"}
             onClick={props.onClick}
+            size='sm'
         >
             {props.name}
         </Button>
