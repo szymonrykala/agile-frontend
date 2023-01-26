@@ -23,13 +23,14 @@ export default function ChatContainer({ children }: IChatContainer) {
         <Sheet
             variant='outlined'
             sx={{
+                zIndex: 9999,
                 width: '93%',
                 maxWidth: maxWidth,
                 maxHeight: { md: '550px', sx: undefined },
                 position: 'absolute',
                 bottom: '0px',
                 right: '2vw',
-                borderRadius: 7,
+                borderRadius: 3,
                 padding: 1,
                 bgcolor: 'background.componentBg',
                 gap: 1,
@@ -37,7 +38,7 @@ export default function ChatContainer({ children }: IChatContainer) {
                 ...minimized ? {} : {
                     height: '92vh',
                     gridTemplateRows: {
-                        xs: '40px 1px 1fr 65px'
+                        xs: '35px 1px 1fr 65px'
                     }
                 },
             }}

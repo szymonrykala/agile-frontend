@@ -13,7 +13,7 @@ export default function Message({ text, mine, sender = '', userId = '', date }: 
         variant="soft"
         sx={{
             padding: '5px',
-            borderRadius: 8,
+            borderRadius: 3,
             width: 'max-content',
             maxWidth: '80%',
             alignSelf: mine ? 'flex-end' : 'flex-start',
