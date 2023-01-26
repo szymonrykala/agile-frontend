@@ -10,13 +10,15 @@ import Login from "./components/Pages/Login";
 import Registration from "./components/Pages/Registration";
 import SessionController from "./components/Pages/SessionControler";
 import Logout from "./components/Pages/Logout";
+import UserModal from "./components/Users/UserModal";
+import { ErrorBaner } from "./components/Errors";
 
 
 
 const AppRouter = createBrowserRouter([
   {
     path: "/",
-    element: <SessionController element={<Outlet/>}/>,
+    element: <SessionController element={<Outlet />} />,
     errorElement: null,
     children: [
       {
@@ -33,7 +35,7 @@ const AppRouter = createBrowserRouter([
       },
       {
         path: 'app',
-        element: <SessionController element={<App />}/>,
+        element: <SessionController element={<App />} />,
         children: [
           {
             path: 'users/:userId/tasks',
@@ -47,7 +49,14 @@ const AppRouter = createBrowserRouter([
           },
           {
             path: 'users',
-            element: <Users />
+            element: <Users />,
+            children: [
+              {
+                path: ':userId',
+                element: <UserModal />,
+                errorElement: <ErrorBaner />,
+              }
+            ]
           },
           {
             path: 'projects',
@@ -58,7 +67,7 @@ const AppRouter = createBrowserRouter([
       },
     ]
   },
-],{
+], {
   basename: process.env.REACT_APP_BASE_URL
 });
 
