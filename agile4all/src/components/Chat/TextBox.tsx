@@ -21,7 +21,7 @@ export default function TextBox({ messagesContainer }: ITextBox) {
 
         const message: ChatMessage = {
             text: text,
-            userId: user?.id || 'unknown',
+            userId: user?.id || -1,
             date: new Date().toLocaleTimeString(),
             sender: user?.email || 'unknown'
         }

@@ -15,7 +15,7 @@ function Chat() {
     useEffect(() => {
         const message = {
             text: 'spoko ale wymaga bardzo dużo pracy a ciężko się na długo najeść',
-            userId: '3fasdwer63f66afa6',
+            userId: -1,
             date: '12:55:40 AM',
             sender: 'user@example.com'
         }

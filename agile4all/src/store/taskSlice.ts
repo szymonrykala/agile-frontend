@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import Task from '../models/task'
-import { IselectBy } from './index'
 
 
 
@@ -24,15 +23,10 @@ export const tasksSlice = createSlice({
             tasks.splice(taskIndex, 1, action.payload)
             return tasks
         },
-        selectBy: (tasks, action: PayloadAction<IselectBy>) => {
-            const key = Object.keys(action.payload)[0]
-
-            return tasks.filter(item => item[key] === action.payload[key])
-        },
     },
 })
 
-export const { add, load, remove, flush, update, selectBy } = tasksSlice.actions
+export const { add, load, remove, flush, update } = tasksSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (tasks: RootState) => tasks

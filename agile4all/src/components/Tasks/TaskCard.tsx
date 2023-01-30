@@ -31,7 +31,7 @@ export default function TaskCard({ data }: ITaskCard) {
                 marginBottom={1}
             >
                 <Link to={`${data.id}`}>
-                    {data.id.slice(-5, -1)}-
+                    {data.id}-
                 </Link>
                 {data.title}
             </Typography>

@@ -14,15 +14,15 @@ import NamedAvatar from "../Tasks/NamedAvatar";
 const mockUSerProjects = [
     {
         name: 'SuperTurbo project',
-        id: '235687iujht'
+        id: -2
     }, {
         name: 'Kolorowe kredki',
-        id: '23sdfkshf983t'
+        id: -3
     }
 ]
 
 const demoUser: User = {
-    id: 'loading...',
+    id: -1,
     email: 'loading...',
     firstname: 'loading...',
     lastname: 'loading...',
@@ -35,7 +35,7 @@ export default function UserModal() {
     const { userId } = useParams();
 
     const dispatch = useAppDispatch();
-    const reduxUser = useAppSelector(({ users }) => users.find(({ id }) => id === userId)) || demoUser
+    const reduxUser = useAppSelector(({ users }) => users.find(({ id }) => id === Number(userId))) || demoUser
 
     const [user, setUser] = useState(reduxUser);
     const [editMode, setEditMode] = useState<boolean>(false);

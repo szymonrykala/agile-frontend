@@ -7,7 +7,7 @@ interface IMessage extends ChatMessage {
     mine?: boolean,
 }
 
-export default function Message({ text, mine, sender = '', userId = '', date }: IMessage) {
+export default function Message({ text, mine, sender = '', userId = -1, date }: IMessage) {
     return <Sheet
         color={mine ? "primary" : 'neutral'}
         variant="soft"

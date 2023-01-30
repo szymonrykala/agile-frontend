@@ -50,7 +50,7 @@ export default function FilesPanel(props: IFilesPanel) {
         }
 
         const newFile: FileModel = {
-            id: file.name,
+            id: Number(file.name),
             name: file.name,
             link: `https://myapp.com/files/${file.name}`,
             userId: userId,

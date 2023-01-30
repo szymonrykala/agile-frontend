@@ -33,15 +33,15 @@ export default class UsersClient
         public path:string = '/users'
 
         saveUserId(userId:UUID){
-            localStorage.setItem(this.userIdKey,userId)
+            localStorage.setItem(this.userIdKey, String(userId))
         }
 
-        getSavedUserId():string{
-            return localStorage.getItem(this.userIdKey) || 'unknown'
+        getSavedUserId():number{
+            return Number(localStorage.getItem(this.userIdKey) || -1)
         }
 
         async readUserFromSession(){
-            const userId = localStorage.getItem(this.userIdKey)
+            const userId:number = Number(localStorage.getItem(this.userIdKey))
 
             if(userId === null) throw new NoValidUserSessionError()
             

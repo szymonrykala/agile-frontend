@@ -3,7 +3,7 @@ import Link from "../common/Link";
 import TaskCard from "../Tasks/TaskCard";
 import CollapsibleListItem from "../common/CollapsibleListItem";
 import { Outlet, useParams } from "react-router";
-import FilterBar from "../FilterBar";
+import FilterBar from "../ParameterBar";
 import { useCallback, useEffect } from "react";
 import { TasksApi } from '../../client';
 import Task from "../../models/task";
@@ -32,7 +32,7 @@ function ProjectTasksListItem({ project }: IProjectListItem) {
     const getTasks = useCallback(async () => {
         try {
             const taskItems = await TasksApi.getAll({
-                'userId': userId
+                'userId': Number(userId)
             })
             dispatch(load(taskItems as Task[]))
 
@@ -48,7 +48,7 @@ function ProjectTasksListItem({ project }: IProjectListItem) {
         const task: ICreateTaskData = {
             title: title,
             description: "What needs to be done??",
-            userId: sessionUser?.id || 'unassigned'
+            userId: sessionUser?.id || -1
         }
         await TasksApi.create(task)
         getTasks()

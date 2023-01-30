@@ -12,7 +12,7 @@ export interface ICreateTaskData {
 export interface IUpdateTaskData {
     title: string,
     description: string,
-    userId: string,
+    userId: UUID,
     status: TaskStatus
 }
 

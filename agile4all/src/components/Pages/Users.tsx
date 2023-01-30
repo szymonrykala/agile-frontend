@@ -26,7 +26,7 @@ const sorts = [
 ]
 
 const user: User = {
-    id: 'f4w5gf6y67hgfdg',
+    id: 1,
     email: 'example@gmail.com',
     firstname: 'Janusz',
     lastname: 'Testowski',

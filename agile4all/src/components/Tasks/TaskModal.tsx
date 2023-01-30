@@ -21,10 +21,10 @@ import { useParams } from "react-router";
 const demoTaskData = {
     description: `loading...`,
     title: `loading...`,
-    id: '001',
-    projectId: '001',
+    id: -1,
+    projectId: -1,
     status: TaskStatus.ARCHIVED,
-    userId: '001'
+    userId: -1
 }
 
 
@@ -33,7 +33,7 @@ export default function TaskModal() {
     const [editMode, setEditMode] = useState<boolean>(false);
     const dispatch = useAppDispatch();
     const { taskId } = useParams()
-    const initTask = useAppSelector(({ tasks }) => tasks.find(({ id }) => id === taskId))
+    const initTask = useAppSelector(({ tasks }) => tasks.find(({ id }) => id === Number(taskId)))
 
     const [task, setTask] = useState<Task>(initTask || demoTaskData);
 
@@ -57,7 +57,7 @@ export default function TaskModal() {
                     description: task.description,
                     title: task.title,
                     status: task.status,
-                    userId: task.userId
+                    userId: Number(task.userId)
                 })
             } catch (err) { alert(err) }
         }
@@ -135,10 +135,10 @@ export default function TaskModal() {
                     {
                         [
                             {
-                                id: '34656gyh67i',
+                                id: 3,
                                 email: 'firstOne@email.com'
                             }, {
-                                id: '4365677i',
+                                id: 4,
                                 email: 'secondOne@email.com'
                             }, {
                                 id: sessionUser?.id,
