@@ -26,7 +26,7 @@ export default function UsersList() {
     return (
         <Sheet sx={{ padding: 3, bgcolor: 'background.componentBg' }}>
             <List
-                sx={{ '--List-decorator-size': '56px', gap: 1 }}
+                sx={{ '--List-decorator-size': '56px', gap: 1, maxWidth: '600px' }}
             >
                 {filteredUsers.map((user, index) => <UserListItem key={index} data={user} />)}
             </List>
