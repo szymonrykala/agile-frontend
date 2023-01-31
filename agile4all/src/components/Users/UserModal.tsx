@@ -42,10 +42,10 @@ export default function UserModal() {
 
 
     useEffect(() => {
-        if (reduxUser === undefined) {
-            throw Error(`User with id="${userId}" Not Found`)
+        if (user.id === -1) {
+            throw Error(`User with id="${user.id}" Not Found`)
         }
-    }, [reduxUser]);
+    }, [reduxUser, user.id]);
 
 
     const updateUserField = useCallback((
@@ -54,7 +54,7 @@ export default function UserModal() {
     ) => {
         setUser({ ...user, [field]: value })
 
-    }, [user])
+    }, [user, setUser])
 
     const roleUpdate = useCallback((event: any, newRole: UserRole | null) => {
         if (newRole) setUser({ ...user, role: newRole })
@@ -75,7 +75,7 @@ export default function UserModal() {
         await UsersApi.delete(user.id);
         dispatch(remove(user));
         navigate('../')
-    }, [user.id]);
+    }, [user, dispatch, navigate]);
 
 
     return (

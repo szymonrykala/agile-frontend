@@ -1,4 +1,4 @@
-import { List, Sheet } from '@mui/joy';
+import { List, Sheet, Typography } from '@mui/joy';
 import { useMemo } from 'react';
 import { useAppSelector } from '../../hooks';
 import User from '../../models/user';
@@ -24,7 +24,8 @@ export default function UsersList() {
 
 
     return (
-        <Sheet sx={{ padding: 3, bgcolor: 'background.componentBg' }}>
+        <Sheet sx={{ padding: 3, bgcolor: 'background.componentBg', borderRadius: 2 }}>
+            <Typography fontSize="sm">Members:</Typography>
             <List
                 sx={{ '--List-decorator-size': '56px', gap: 1, maxWidth: '600px' }}
             >

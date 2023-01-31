@@ -16,7 +16,7 @@ function Logout() {
         dispatch(removeSession())
         UsersApi.logout()
         navigate('/login')
-    }, [])
+    }, [navigate, dispatch])
 
     return <BasePage>
         <Sheet sx={{

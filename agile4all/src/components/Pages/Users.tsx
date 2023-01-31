@@ -57,14 +57,12 @@ export default function Users() {
 
 
     return (
-        <>
-            <ParameterBarContextProvider<User>>
-                <Stack spacing={2} >
-                    <Outlet />
-                    <ParameterBar<User> sorts={sorts} filters={filters} init={{ sort: 1, filter: filters.indexOf('email') }} />
-                    <UsersList />
-                </Stack>
-            </ParameterBarContextProvider>
-        </>
+        <ParameterBarContextProvider<User>>
+            <Stack spacing={2} >
+                <ParameterBar<User> sorts={sorts} filters={filters} init={{ sort: 1, filter: filters.indexOf('email') }} />
+                <Outlet />
+                <UsersList />
+            </Stack>
+        </ParameterBarContextProvider>
     )
 }

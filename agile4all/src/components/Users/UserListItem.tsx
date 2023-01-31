@@ -1,6 +1,6 @@
-import { Avatar, Link, ListItem, ListItemButton, ListItemContent, ListItemDecorator, Typography } from '@mui/joy';
+import { Avatar, ListItem, ListItemButton, ListItemContent, ListItemDecorator, Typography } from '@mui/joy';
 import User from '../../models/user';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 
@@ -14,7 +14,7 @@ export default function UserListItem({ data }: IUserListItem) {
 
     return (
         <ListItem>
-            <ListItemButton component={RouterLink} to={`${data.id}`}>
+            <ListItemButton component={Link} to={`${data.id}`}>
                 <ListItemDecorator sx={{ alignSelf: 'flex-start' }}>
                     <Avatar src="/static/images/avatar/1.jpg" />
                 </ListItemDecorator>

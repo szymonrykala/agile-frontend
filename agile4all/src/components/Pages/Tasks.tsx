@@ -96,7 +96,7 @@ export default function Tasks() {
     return (
         <>
             <Outlet />
-            <FilterBar />
+            {/* <FilterBar /> */}
             <List>
                 {
                     projects && projects.map((project, index) =>
