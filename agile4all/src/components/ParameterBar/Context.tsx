@@ -52,7 +52,7 @@ export default function ParameterBarContextProvider<T>({
 
     const handleSetSort = useCallback((sort: ISortItem<T>) => {
         setSort(sort)
-    }, [setFilter])
+    }, [setSort])
 
 
     // const handleSetSearch = useCallback((value: string) => {

@@ -8,7 +8,7 @@ interface IFilterItem {
 }
 
 
-export default function FilterItem<T>(props: IFilterItem) {
+export default function FilterItem(props: IFilterItem) {
     return (
         <Button
             variant={props.clicked ? "soft" : "outlined"}

@@ -1,5 +1,5 @@
 import { Input, Option, Select, Sheet, Stack, Typography } from "@mui/joy";
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import { ISortItem, useParameterBarContext } from "./Context";
 import FilterItem from "./ParameterItem";
 
@@ -27,10 +27,17 @@ export default function ParameterBar<T>({ sorts, filters, init }: IParameterBar<
         sorts && init.sort && setSort(sorts[init.sort]);
         filters && init.filter && setFilter({ key: filters[init.filter], value: '' });
         // search && init.search && setSearch(init.search);
-    }, [])
+    }, [
+        sorts,
+        filters, 
+        init.sort, 
+        init.filter,
+        setSort,
+        setFilter
+    ])
 
 
-    const delayedUpdateFilterValue = useCallback((evt:React.ChangeEvent<HTMLInputElement>)=>{
+    const delayedUpdateFilterValue = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => {
         setFilterStr(evt.target.value);
 
         clearTimeout(trigger);
@@ -38,7 +45,12 @@ export default function ParameterBar<T>({ sorts, filters, init }: IParameterBar<
             filter && setFilter({ ...filter, value: filterStr });
         }, 1000);
         setTrigger(timer);
-    },[])
+    }, [
+        filter,
+        filterStr,
+        trigger,
+        setFilter
+    ])
 
 
     return (
@@ -49,7 +61,8 @@ export default function ParameterBar<T>({ sorts, filters, init }: IParameterBar<
                 display: 'flex',
                 alignItems: 'center',
                 flexWrap: 'wrap',
-                bgcolor: 'background.componentBg'
+                bgcolor: 'background.componentBg',
+                borderRadius: 2
             }}
         >
             {sorts &&
