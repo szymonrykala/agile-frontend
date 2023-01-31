@@ -12,6 +12,7 @@ import SessionController from "./components/Pages/SessionControler";
 import Logout from "./components/Pages/Logout";
 import UserModal from "./components/Users/UserModal";
 import { ErrorBaner } from "./components/Errors";
+import ProjectModal from "./components/Projects/ProjectModal";
 
 
 
@@ -52,17 +53,36 @@ const AppRouter = createBrowserRouter([
             element: <Users />,
             children: [
               {
+                errorElement: <ErrorBaner />,
                 path: ':userId',
                 element: <UserModal />,
-                errorElement: <ErrorBaner />,
               }
             ]
           },
           {
             path: 'projects',
-            element: <Projects />
+            element: <Projects />,
+            children: [
+              {
+                errorElement: <ErrorBaner />,
+                path: ':projectId',
+                element: <ProjectModal />,
+                children: [
+                  {
+                    path: 'tasks',
+                    element: <>project tasks</>,
+                    children: [
+                      {
+                        path: ':taskId',
+                        element: <TaskModal />,
+                        errorElement: <ErrorBaner />,
+                      }
+                    ]
+                  },
+                ]
+              }
+            ]
           }
-
         ]
       },
     ]

@@ -14,7 +14,7 @@ export default function EditableTextArea(props: IEditableTextArea) {
 
     const changeHandler: ChangeEventHandler<HTMLTextAreaElement> = useCallback(({ target }) => {
         props.onChange(target.value)
-    }, [props.onChange])
+    }, [props])
 
     return (
         <Typography component='label' level='body3'>

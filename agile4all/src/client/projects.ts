@@ -1,5 +1,4 @@
 import { UUID } from "../models/common"
-import { UserRole } from "../models/user"
 import ApiClient from "./ApiClient"
 
 

@@ -1,23 +1,46 @@
-import { List } from "@mui/joy";
+import { Stack } from "@mui/joy";
+import { Outlet } from "react-router";
+import ParameterBarContextProvider, { ISortItem } from "../ParameterBar/Context";
+import Project from "../../models/project";
+import ParameterBar from "../ParameterBar";
+import ProjectsList from "../Projects/ProjectsList";
+import { useCallback, useEffect } from "react";
+import { ProjectsApi } from "../../client";
+import { useAppDispatch } from "../../hooks";
+import { load } from "../../store/projectSlice";
 import { mockProject } from "../../mockData/projects";
-import ProjectItem from "../Projects/ProjectItem";
 
 
-const projects = new Array(3).fill(mockProject());
+const mockedProjects = new Array(4).fill(mockProject());
 
+
+const sorts: ISortItem<Project>[] = [
+    {
+        name: 'Project name',
+        key: 'name'
+    }
+]
 
 export default function Projects() {
+    const dispatch = useAppDispatch()
+
+    const loadProjects = useCallback(async () => {
+        const projects = await ProjectsApi.getAll()
+        dispatch(load(mockedProjects))
+    }, [dispatch])
+
+    useEffect(() => {
+        loadProjects()
+    }, [loadProjects])
+
     return (
-        <List
-            sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                gap: 2,
-            }}
-        >
-            {
-                projects.map((item, index) => <ProjectItem data={item} index={index} key={index} />)
-            }
-        </List>
+        <ParameterBarContextProvider<Project>>
+            <Stack spacing={2} >
+                <ParameterBar<Project> sorts={sorts} init={{ sort: 0 }} />
+                <Outlet />
+                <ProjectsList />
+            </Stack>
+
+        </ParameterBarContextProvider>
     )
 }

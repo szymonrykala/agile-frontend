@@ -1,30 +1,62 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { UUID } from '../models/common'
 import Project from '../models/project'
-import { IselectBy } from './index'
+import User from '../models/user'
+
+
+interface IAssignUser {
+    projectId: UUID,
+    user: User
+}
+
+interface IRemoveUser {
+    projectId: UUID,
+    userId: UUID
+}
 
 
 export const projectSlice = createSlice({
     name: 'projects',
     initialState: [] as Project[],
     reducers: {
-        add: (projects, action: PayloadAction<Project[]>) => {
-            return [...projects, ...action.payload]
+        add: (projects, action: PayloadAction<Project>) => {
+            projects.push(action.payload)
+            return projects
+        },
+        load: (projects, action: PayloadAction<Project[]>) => {
+            return action.payload
         },
         remove: (projects, action: PayloadAction<Project>) => {
             return projects.filter(item => item.id !== action.payload.id)
         },
-        reset: (projects) => {
+        flush: (projects) => {
             return []
         },
-        selectBy: (projects, action: PayloadAction<IselectBy>) => {
-            const key = Object.keys(action.payload)[0]
+        update: (projects, action: PayloadAction<Project>) => {
+            const index = projects.findIndex(({ id }) => id === action.payload.id)
+            projects.splice(index, 1, action.payload)
+            return projects
+        },
+        assignUser: (projects, action: PayloadAction<IAssignUser>) => {
+            const index = projects.findIndex(({ id }) => id === action.payload.projectId)
+            if (index) {
+                projects[index].users.push(action.payload.user)
+            }
+            return projects
+        },
+        removeUser: (projects, action: PayloadAction<IRemoveUser>) => {
+            const index = projects.findIndex(({ id }) => id === action.payload.projectId)
 
-            return projects.filter(item => item[key] === action.payload[key])
+            if (index !== -1) {
+                const userIndex = projects[index].users.findIndex(({ id }) => id === action.payload.userId)
+                projects[index].users.splice(userIndex, 1)
+            }
+            return projects
         },
     },
 })
 
-export const { add, remove, reset, selectBy } = projectSlice.actions
+export const { add, load, remove, flush, update, assignUser, removeUser } = projectSlice.actions
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (projects: RootState) => projects

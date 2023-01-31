@@ -6,7 +6,8 @@ interface IEditableTextField {
     onChange: (text: string) => void,
     editable: boolean,
     value: string,
-    title: string
+    title: string,
+    size?: 'sm' | 'md' | 'lg'
 }
 
 
@@ -14,14 +15,14 @@ export default function EditableTextField(props: IEditableTextField) {
 
     const changeHandler: ChangeEventHandler<HTMLInputElement> = useCallback(({ target }) => {
         props.onChange(target.value)
-    }, [props.onChange])
+    }, [props])
 
     return (
         <Typography component='label' level='body3'>
             {props.title}
             <Input
                 id={props.title}
-                size='sm'
+                size={props.size || 'sm'}
                 color="neutral"
                 disabled={!props.editable}
                 variant={props.editable ? 'soft' : "plain"}
