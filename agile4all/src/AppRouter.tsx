@@ -1,5 +1,5 @@
 import {
-  createBrowserRouter, Outlet
+  createHashRouter, Outlet
 } from "react-router-dom";
 import App from "./App";
 import Projects from "./components/Pages/Projects";
@@ -16,7 +16,7 @@ import ProjectModal from "./components/Projects/ProjectModal";
 
 
 
-const AppRouter = createBrowserRouter([
+const AppRouter = createHashRouter([
   {
     path: "/",
     element: <SessionController element={<Outlet />} />,
@@ -24,6 +24,9 @@ const AppRouter = createBrowserRouter([
     children: [
       {
         index: true,
+        element: <Login />
+      },
+      {
         path: 'login',
         element: <Login />
       },
@@ -37,7 +40,7 @@ const AppRouter = createBrowserRouter([
       },
       {
         path: 'app',
-        element: <App />,
+        element: <SessionController element={<App />} />,
         children: [
           {
             path: 'users/:userId/tasks',

@@ -24,7 +24,7 @@ function SessionController(props: ISessionController) {
                 dispatch(setSession(session))
             }
 
-            if (window.location.href.match('/login|register')) {
+            if (window.location.href.match(/\/app$/)) {
                 navigate(`/app/users/${userId}/tasks`)
             }
 
