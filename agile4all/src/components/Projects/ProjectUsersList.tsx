@@ -1,4 +1,4 @@
-import { List, Select, Option, ListItem, ListItemContent, IconButton, Typography, Stack, Avatar, ListItemDecorator } from "@mui/joy";
+import { List, ListItem, ListItemContent, IconButton, Typography, Stack, Avatar, ListItemDecorator } from "@mui/joy";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { ProjectsApi } from "../../client";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -6,6 +6,7 @@ import { UUID } from "../../models/common";
 import User from "../../models/user";
 import EditableTextField from "../common/EditableTextField";
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import { assignUser, removeUser } from "../../store/projectSlice";
 
 
@@ -15,11 +16,12 @@ interface IProjectUsersList {
 }
 
 interface IUserItem {
-    onRemove(): void
+    onRemove?: () => void
+    onAdd?: () => void
     children: ReactNode
 }
 
-function UserItem({ children, onRemove }: IUserItem) {
+function UserItem({ children, onRemove, onAdd }: IUserItem) {
     return (
         <ListItem sx={{ bgcolor: "background.componentBg" }}>
             <ListItemDecorator sx={{ alignSelf: 'flex-start' }}>
@@ -33,9 +35,12 @@ function UserItem({ children, onRemove }: IUserItem) {
                     <Typography>
                         {children}
                     </Typography>
-                    <IconButton color="danger" onClick={onRemove}>
+                    {onRemove && <IconButton color="danger" onClick={onRemove}>
                         <DeleteIcon />
-                    </IconButton>
+                    </IconButton>}
+                    {onAdd && <IconButton color="success" onClick={onAdd}>
+                        <AddIcon />
+                    </IconButton>}
                 </Stack>
             </ListItemContent>
         </ListItem>
@@ -64,9 +69,9 @@ export default function ProjectUsersList({ projectId, users }: IProjectUsersList
     }, [search, allUsers])
 
 
-    const addUserToProject = useCallback((user: User) => {
+    const addUserToProject = useCallback(async (user: User) => {
+        await ProjectsApi.addUser(projectId, user.id)
 
-        ProjectsApi.addUser(projectId, user.id)
         dispatch(assignUser({ projectId: projectId, user: user }))
         setLocalUsers([...localUsers, user])
     }, [
@@ -80,7 +85,7 @@ export default function ProjectUsersList({ projectId, users }: IProjectUsersList
         await ProjectsApi.removeUser(projectId, id)
 
         dispatch(removeUser({ projectId: projectId, userId: id }))
-        
+
         const index = localUsers.findIndex((user) => user.id !== id);
         console.log(index)
         localUsers.splice(index, 1);
@@ -125,21 +130,23 @@ export default function ProjectUsersList({ projectId, users }: IProjectUsersList
                 value={search}
                 onChange={setSearch}
             />
-            <Select
-                value={filteredAllUsers[0]?.id}
-            >
+            <List size="sm" sx={{
+                "--List-gap": '5px',
+                "--List-padding": "5px",
+                bgcolor: "background.appBody",
+                maxHeight: '350px'
+            }}>
                 {
                     filteredAllUsers.map((user, index) =>
-                        <Option
+                        <UserItem
                             key={`-${index}`}
-                            value={user.id}
-                            onClick={() => addUserToProject(user)}
+                            onAdd={() => addUserToProject(user)}
                         >
                             {user.email}
-                        </Option>
+                        </UserItem>
                     )
                 }
-            </Select>
+            </List>
         </>
     )
 }

@@ -1,21 +1,24 @@
 import { List } from '@mui/joy';
-import { useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { useAppSelector } from '../../hooks';
 import Project from '../../models/project';
 import { useParameterBarContext } from '../ParameterBar/Context';
 import ProjectListItem from './ProjectListItem';
 
 
+interface IProjectList {
+    children?: ReactNode
+}
 
-
-export default function ProjectsList() {
+export default function ProjectsList({ children }: IProjectList) {
     const { sort } = useParameterBarContext<Project>();
-    const projects:Project[] = useAppSelector(({ projects }) => projects);
+    const projects: Project[] = useAppSelector(({ projects }) => projects);
 
     const sortedProjests = useMemo(() => {
+        const localProjects = [...projects];
 
         if (sort?.key) {
-            return [...projects.sort((u1, u2) => (u1[sort.key] as any) - (u2[sort.key] as any))];
+            return localProjects.sort();
         } else {
             return projects
         }
@@ -31,7 +34,7 @@ export default function ProjectsList() {
             }}
         >
             {sortedProjests.map((project, index) => <ProjectListItem key={index} data={project} />)}
+            {children}
         </List>
-
     )
 }

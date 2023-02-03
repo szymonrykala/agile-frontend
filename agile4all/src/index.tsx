@@ -11,6 +11,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import AppRouter from './AppRouter';
+import { ReloadTriggerContextProvider } from './components/common/ReloadTrigger';
 
 
 
@@ -23,19 +24,21 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <StyledEngineProvider injectFirst>
-      <Provider store={store}>
-        <CssVarsProvider disableTransitionOnChange theme={teamTheme}>
-          <GlobalStyles<Theme>
-            styles={(theme) => ({
-              body: {
-                margin: 0,
-                fontFamily: theme.vars.fontFamily.body,
-              },
-            })}
-          />
-          <RouterProvider router={AppRouter} />
-        </CssVarsProvider >
-      </Provider>
+      <CssVarsProvider disableTransitionOnChange theme={teamTheme}>
+        <GlobalStyles<Theme>
+          styles={(theme) => ({
+            body: {
+              margin: 0,
+              fontFamily: theme.vars.fontFamily.body,
+            },
+          })}
+        />
+        <Provider store={store}>
+          <ReloadTriggerContextProvider>
+            <RouterProvider router={AppRouter} />
+          </ReloadTriggerContextProvider>
+        </Provider>
+      </CssVarsProvider >
     </StyledEngineProvider>
   </React.StrictMode>
 );

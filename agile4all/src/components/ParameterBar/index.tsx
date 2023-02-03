@@ -24,8 +24,8 @@ export default function ParameterBar<T>({ sorts, filters, init }: IParameterBar<
     const [trigger, setTrigger] = useState<any>();
 
     useLayoutEffect(() => {
-        sorts && init.sort && setSort(sorts[init.sort]);
-        filters && init.filter && setFilter({ key: filters[init.filter], value: '' });
+        filters && typeof init.filter === 'number' && setFilter({ key: filters[init.filter], value: '' });
+        sorts && typeof init.sort === 'number' && setSort(sorts[init.sort]);
         // search && init.search && setSearch(init.search);
     }, [
         sorts,

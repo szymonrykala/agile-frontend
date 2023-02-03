@@ -1,6 +1,8 @@
+import { ProjectsApi } from "."
 import { UUID } from "../models/common"
-import { Session, UserRole } from "../models/user"
-import ApiClient from "./ApiClient"
+import Project from "../models/project"
+import User, { Session, UserRole } from "../models/user"
+import ApiClient, { ResponseData } from "./ApiClient"
 import { BadCredentialsError, NoValidUserSessionError, UserRegistrationError } from "./exceptions"
 
 
@@ -9,7 +11,7 @@ export interface ILoginData {
     password: string
 }
 
-export interface ICreateUserData extends ILoginData{
+export interface ICreateUserData extends ILoginData {
     firstname: string,
     lastname: string,
 }
@@ -20,7 +22,7 @@ export interface IUpdateUserData {
     role: UserRole
 }
 
-interface ILoginResponse{
+interface ILoginResponse extends ResponseData {
     token: string,
     userId: UUID
 }
@@ -28,61 +30,66 @@ interface ILoginResponse{
 
 export default class UsersClient
     extends ApiClient<ICreateUserData, IUpdateUserData> {
-        private userIdKey = 'userId'
+    private userIdKey = 'userId'
 
-        public path:string = '/users'
+    public path: string = '/users'
 
-        saveUserId(userId:UUID){
-            localStorage.setItem(this.userIdKey, String(userId))
+    saveUserId(userId: UUID) {
+        localStorage.setItem(this.userIdKey, String(userId))
+    }
+
+    getSavedUserId(): number {
+        return Number(localStorage.getItem(this.userIdKey) || -1)
+    }
+
+    async readUserFromSession(): Promise<Session> {
+        const userId: number = Number(localStorage.getItem(this.userIdKey))
+
+        if (userId === null) throw new NoValidUserSessionError()
+
+        try {
+            const user = await this.getOne(userId) as User
+            const userProjects = await ProjectsApi.getAll({ userId: userId }) as Project[]
+            console.log(userProjects)
+            return {
+                user: user,
+                projects: userProjects
+            }
+        } catch (error) {
+            console.error(error)
+            throw new NoValidUserSessionError()
         }
+    }
 
-        getSavedUserId():number{
-            return Number(localStorage.getItem(this.userIdKey) || -1)
-        }
+    async login(data: ILoginData) {
+        try {
+            const resp = await this._post(`${this.path}/login`, data) as ILoginResponse;
 
-        async readUserFromSession(){
-            const userId:number = Number(localStorage.getItem(this.userIdKey))
-
-            if(userId === null) throw new NoValidUserSessionError()
-            
-            try {
-                const user =  await this.getOne(userId) as Session
-                return user
-            } catch (error) {
-                console.error(error)
-                throw new NoValidUserSessionError()
+            this.authToken = resp.token
+            this.saveUserId(resp.userId)
+            return true
+        } catch (error) {
+            console.debug(error)
+            if (true) {
+                throw new BadCredentialsError()
             }
         }
+    }
 
-        async login(data: ILoginData){
-            try {
-                const resp = await this._post('/auth',data) as ILoginResponse;
-    
-                this.authToken = resp.token
-                this.saveUserId(resp.userId)
-                return true
-            } catch (error) {
-                console.debug(error)
-                if(true){
-                    throw new BadCredentialsError()
-                }
+    logout() {
+        this.clearAuthToken()
+        localStorage.removeItem(this.userIdKey)
+    }
+
+    async register(data: ICreateUserData) {
+        try {
+            await this._post(`${this.path}`, data)
+        } catch (error) {
+            console.debug(error)
+            if (true) {
+                throw new UserRegistrationError()
             }
         }
-
-        logout(){
-            this.clearAuthToken()
-            localStorage.removeItem(this.userIdKey)
-        }
-
-        async register(data: ICreateUserData){
-            try{
-                await this._post('/users', data)
-            } catch (error) {
-                console.debug(error)
-                if(true){
-                    throw new UserRegistrationError()
-                }
-            }
-        }
+    }
 }
 

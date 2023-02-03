@@ -17,7 +17,7 @@ export default function TaskCard({ data }: ITaskCard) {
             <Typography level='body2' marginBottom={1}>
                 <StatusChip status={data.status} />
                 &nbsp;
-                <Link to={`/users/${data.userId}`}>
+                <Link to={`/app/users/${data.userId}`}>
                     Assigned User
                 </Link>
             </Typography>
@@ -44,9 +44,7 @@ export default function TaskCard({ data }: ITaskCard) {
             >
                 {data.description}
             </Typography>
-            <Link sx={{ fontSize: '0.9rem' }}
-                to={`${data.id}`}
-            >more...</Link>
+            <Link to={`${data.id}`}>see more...</Link>
         </Card>
     )
 }

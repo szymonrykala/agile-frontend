@@ -3,7 +3,9 @@ import { TaskStatus } from "../models/task"
 import ApiClient from "./ApiClient"
 
 
+
 export interface ICreateTaskData {
+    projectId?: UUID,
     title: string,
     description: string,
     userId: UUID,
@@ -23,4 +25,10 @@ export default class TasksClient
 
     public path: string = '/tasks'
 
+    create(body:ICreateTaskData){
+        const projectId = body.projectId;
+        delete body.projectId
+
+        return this._post(`/projects/${projectId}${this.path}`, body)
+    }
 }

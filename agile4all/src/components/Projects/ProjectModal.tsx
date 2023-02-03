@@ -1,5 +1,5 @@
 import { Box, Avatar, Typography, IconButton, Sheet, Button } from "@mui/joy";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Modal from "../common/Modal";
 import FilesPanel from "../FilesPanel";
 import EditIcon from "@mui/icons-material/Edit";
@@ -29,6 +29,7 @@ export default function ProjectModal() {
     const { projectId } = useParams();
     const dispatch = useAppDispatch();
     const [editMode, setEditMode] = useState<boolean>(false);
+    const navigate = useNavigate();
 
     const reduxProject: Project = useAppSelector(({ projects }) =>
         projects.find(({ id }) => id === Number(projectId)
@@ -45,10 +46,13 @@ export default function ProjectModal() {
         dispatch(update(project))
     }, [project, dispatch])
 
+
     const deleteProject = useCallback(async () => {
         await ProjectsApi.delete(project.id)
         dispatch(remove(project))
-    }, [project, dispatch])
+        navigate('../')
+    }, [project, dispatch, navigate])
+
 
     useEffect(() => {
         if (reduxProject.id === -1) {
@@ -72,10 +76,8 @@ export default function ProjectModal() {
                     src="https://th.bing.com/th/id/R.75f9b714fb48bdf6c7c758dbc7f391e6?rik=BNp%2bziTPLYnx3g&pid=ImgRaw&r=0"
                     sx={{ borderRadius: 'sm' }}
                 />
-                <Typography>
-                    <Link to={String(project.id)}>
-                        {project.name}
-                    </Link>
+                <Typography component={Link} to='.' color='primary'>
+                    {project.name}
                 </Typography>
             </Box>
 

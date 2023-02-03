@@ -6,6 +6,7 @@ import { Outlet } from 'react-router-dom';
 import { useAppSelector } from './hooks';
 import { ChatContextProvider } from './components/Chat/Context';
 import Chat from './components/Chat';
+import ResourceLoader from './components/common/ReourceLoader';
 
 
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
 
   return (
     <>
+      {session && <ResourceLoader />}
       {drawerOpen && (
         <Layout.SideDrawer onClose={() => setDrawerOpen(false)}>
           <SideNav />
@@ -36,16 +38,11 @@ export default function App() {
             />
           </Layout.Header>
 
-          {<Layout.SideNav>
+          <Layout.SideNav>
             <SideNav />
-          </Layout.SideNav>}
+          </Layout.SideNav>
 
           <Layout.Main>
-
-            {/* 
-            Here the content of router will be displayed and switched 
-            - instead of <Outlet/>
-          */}
             <Outlet />
             <Chat />
           </Layout.Main>

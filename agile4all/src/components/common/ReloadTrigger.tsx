@@ -50,7 +50,8 @@ export function ReloadTriggerContextProvider({
         return () => {
             interval && clearInterval(interval)
         }
-    }, [triggers, interval])
+    // eslint-disable-next-line
+    }, [triggers])
 
     const trigger = useCallback((type: keyof ITriggers) => {
         setTrigger({ ...triggers, [type]: !triggers[type] })

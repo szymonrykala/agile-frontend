@@ -18,9 +18,8 @@ interface IProjectItem {
 }
 
 
-
-
 export default function ProjectListItem({ data }: IProjectItem) {
+    
 
     return (
         <Sheet

@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router";
 import { UsersApi } from "../../client";
-import { NoValidUserSessionError } from "../../client/exceptions";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { setSession } from "../../store/sessionSlice";
 
@@ -14,6 +13,7 @@ interface ISessionController {
 function SessionController(props: ISessionController) {
     const navigate = useNavigate()
     const dispatch = useAppDispatch()
+
     const isSessionSet = useAppSelector(({ session }) => Boolean(session))
 
     const checkCurrentSession = React.useCallback(async () => {
@@ -23,11 +23,17 @@ function SessionController(props: ISessionController) {
                 const session = await UsersApi.readUserFromSession()
                 dispatch(setSession(session))
             }
-            navigate(`/app/users/${userId}/tasks`)
+
+            if (window.location.href.match('/login|register')) {
+                navigate(`/app/users/${userId}/tasks`)
+            }
+
         } catch (e) {
-            if (e instanceof NoValidUserSessionError) {
-                navigate('/login')
-            } else throw e
+            // if (e instanceof NoValidUserSessionError) {
+            //     navigate('/login')
+            // } else throw e
+            navigate('/login');
+            throw e;
         }
         // there is no need to check session on each route change    
         // eslint-disable-next-line react-hooks/exhaustive-deps    
@@ -35,14 +41,7 @@ function SessionController(props: ISessionController) {
 
     React.useEffect(() => {
         checkCurrentSession();
-
-        // return () => {
-            // dispatch(removeSession())
-        // }
-
-    // there is no need to check session on each route change    
-    // eslint-disable-next-line react-hooks/exhaustive-deps    
-    }, [])
+    }, [checkCurrentSession])
 
     return props.element
 }

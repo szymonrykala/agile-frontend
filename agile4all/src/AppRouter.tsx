@@ -23,6 +23,7 @@ const AppRouter = createBrowserRouter([
     errorElement: null,
     children: [
       {
+        index: true,
         path: 'login',
         element: <Login />
       },
@@ -36,11 +37,12 @@ const AppRouter = createBrowserRouter([
       },
       {
         path: 'app',
-        element: <SessionController element={<App />} />,
+        element: <App />,
         children: [
           {
             path: 'users/:userId/tasks',
             element: <Tasks />,
+            errorElement: <ErrorBaner />,
             children: [
               {
                 path: ':taskId',
@@ -51,9 +53,9 @@ const AppRouter = createBrowserRouter([
           {
             path: 'users',
             element: <Users />,
+            errorElement: <ErrorBaner />,
             children: [
               {
-                errorElement: <ErrorBaner />,
                 path: ':userId',
                 element: <UserModal />,
               }
@@ -67,22 +69,20 @@ const AppRouter = createBrowserRouter([
                 errorElement: <ErrorBaner />,
                 path: ':projectId',
                 element: <ProjectModal />,
-                children: [
-                  {
-                    path: 'tasks',
-                    element: <>project tasks</>,
-                    children: [
-                      {
-                        path: ':taskId',
-                        element: <TaskModal />,
-                        errorElement: <ErrorBaner />,
-                      }
-                    ]
-                  },
-                ]
+              },
+            ]
+          },
+          {
+            path: 'projects/:projectId/tasks',
+            element: <Tasks />,
+            errorElement: <ErrorBaner />,
+            children: [
+              {
+                path: ':taskId',
+                element: <TaskModal />,
               }
             ]
-          }
+          },
         ]
       },
     ]

@@ -1,72 +1,68 @@
-import { IconButton, List, Sheet, Typography } from "@mui/joy";
+import { List, Sheet, Typography } from "@mui/joy";
 import Link from "../common/Link";
 import TaskCard from "../Tasks/TaskCard";
 import CollapsibleListItem from "../common/CollapsibleListItem";
 import { Outlet, useParams } from "react-router";
-import FilterBar from "../ParameterBar";
-import { useCallback, useEffect } from "react";
+import ParameterBar from "../ParameterBar";
+import { useCallback, useEffect, useMemo } from "react";
 import { TasksApi } from '../../client';
-import Task from "../../models/task";
+import Task, { taskStatusSort } from "../../models/task";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { UUID } from "../../models/common";
 import { load } from "../../store/taskSlice";
-import AddIcon from "@mui/icons-material/Add";
 import { ICreateTaskData } from "../../client/tasks";
 import FilesPanel from "../FilesPanel";
+import ParameterBarContextProvider, { ISortItem } from "../ParameterBar/Context";
+import AddListItem from "../common/AddListItem";
+import { useReloadTrigger } from "../common/ReloadTrigger";
+import { QueryParams } from "../../client/interface";
+import Project from "../../models/project";
+import User from "../../models/user";
 
 
 interface IProjectListItem {
+    tasks: Task[],
     project: {
         name: string,
         id: UUID
     }
 }
 
-function ProjectTasksListItem({ project }: IProjectListItem) {
-    const { userId } = useParams();
-    const dispatch = useAppDispatch();
-    const tasks = useAppSelector(({ tasks }) => tasks);
+
+function TaskListItem({ project, tasks }: IProjectListItem) {
+    const { reload } = useReloadTrigger()
     const sessionUser = useAppSelector(({ session }) => session?.user)
 
 
-    const getTasks = useCallback(async () => {
-        try {
-            const taskItems = await TasksApi.getAll({
-                'userId': Number(userId)
-            })
-            dispatch(load(taskItems as Task[]))
-
-        } catch (err) {
-            console.debug(err)
-        }
-    }, [userId, dispatch])
+    const sortedTasks = useMemo(() => {
+        return tasks.sort(taskStatusSort)
+    }, [tasks])
 
 
-    const createTask = useCallback(async () => {
+    const createTask = useCallback(async (projectId: UUID) => {
         const title: string = prompt('type a task title') || 'created task';
 
         const task: ICreateTaskData = {
             title: title,
             description: "What needs to be done??",
-            userId: sessionUser?.id || -1
+            userId: sessionUser?.id || -1,
+            projectId: projectId
         }
         await TasksApi.create(task)
-        getTasks()
-    }, [sessionUser?.id, getTasks]);
-
-
-    useEffect(() => {
-        getTasks()
-    }, [getTasks])
+        reload('tasks')
+    }, [sessionUser?.id, reload]);
 
 
     return (
         <CollapsibleListItem
             open={true}
             header={
-                <Link to={`/projects/${project.id}`}>
+                <Typography
+                    component={Link}
+                    to={`/app/projects/${project.id}`}
+                >
                     {project.name}
-                </Link>
+                </Typography>
             }
             footer={
                 <Sheet sx={{ bgcolor: 'inherit' }}>
@@ -77,33 +73,87 @@ function ProjectTasksListItem({ project }: IProjectListItem) {
                 </Sheet>
             }
         >
-            {tasks.map((task, index) => <TaskCard data={task} key={index} />)}
-            <IconButton
-                onClick={createTask}
-                size='lg'
-            >
-                <AddIcon />
-            </IconButton>
+            {
+                sortedTasks.map((task, index) => <TaskCard data={task} key={`task-${index}`} />)
+            }
 
+            <AddListItem component='div' onClick={() => createTask(sortedTasks[0].projectId)} />
         </CollapsibleListItem>
     )
 }
 
+const filters = [
+    'title', 'description'
+]
+
+const sorts: ISortItem<Task>[] = [
+    {
+        name: 'Project',
+        key: 'projectId',
+    },
+    {
+        name: 'Status',
+        key: 'status',
+    },
+]
+
+
+function selectProjects(projects: Project[], users: User[], queryParams: QueryParams) {
+    if (queryParams?.projectId) {
+        return projects.filter(({ id }) => id === queryParams.projectId)
+
+    } else if (queryParams?.userId) {
+        return projects.filter(({ users }) =>
+            users.map(({ id }) => id).includes(queryParams.userId as number)
+        )
+    } else {
+        return []
+    }
+}
+
 
 export default function Tasks() {
-    const projects = useAppSelector(({ session }) => session?.projects);
+    const queryParams = useParams();
+    const trigger = useReloadTrigger()
+    // const sessionUser = useAppSelector(({ session }) => session?.user)
+    const projects = useAppSelector(({ projects, users }) =>
+        selectProjects(projects, users, queryParams)
+    );
+    const tasks = useAppSelector(({ tasks }) => tasks);
+    const dispatch = useAppDispatch();
+
+
+    const getTasks = useCallback(async () => {
+        try {
+            const taskItems: Task[] = await TasksApi.getAll(queryParams) as unknown as Task[]
+            dispatch(load(taskItems))
+
+        } catch (err) {
+            console.debug(err)
+        }
+    }, [queryParams, dispatch])
+
+
+    useEffect(() => {
+        getTasks()
+    }, [getTasks, trigger.tasks])
+
 
     return (
-        <>
+        <ParameterBarContextProvider<Task>>
+            <ParameterBar<Task> sorts={sorts} filters={filters} init={{ filter: 0, sort: 0 }} />
             <Outlet />
-            {/* <FilterBar /> */}
             <List>
-                {
+                {projects?.length === 0 ?
+                    <Typography p='50px 0px' textAlign='center'>
+                        Create a project to see it tasks
+                    </Typography>
+                    :
                     projects && projects.map((project, index) =>
-                        <ProjectTasksListItem project={project} key={index} />
+                        <TaskListItem tasks={tasks} project={project} key={index} />
                     )
                 }
             </List>
-        </>
+        </ParameterBarContextProvider >
     )
 }

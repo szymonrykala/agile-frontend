@@ -23,7 +23,7 @@ const clicked = {
 export default function SideNav() {
   const loc = useLocation();
   const path = useResolvedPath(loc);
-  const currentSessionUserId = useAppSelector(({ session }) => session?.user.id)
+  const currentSessionUserId = useAppSelector(({ session }) => session?.user?.id)
 
 
   const links = useMemo(() => [

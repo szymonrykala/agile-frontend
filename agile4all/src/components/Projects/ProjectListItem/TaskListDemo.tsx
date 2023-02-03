@@ -2,22 +2,36 @@ import { List, ListItem, ListItemButton, ListItemContent, Typography, Chip, Butt
 import { Link } from "react-router-dom";
 import { UUID } from "../../../models/common";
 import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
+import Task, { taskStatusSort } from "../../../models/task";
+import { useAppSelector } from "../../../hooks";
 
 
 interface ITaskListDemo {
     projectId: UUID
 }
 
+
+function get3Tasksfilter(tasks: Task[], projectId: UUID) {
+    const selected: Task[] = []
+
+    for (const task of tasks.sort(taskStatusSort)) {
+        if (task.projectId === projectId) {
+            selected.push(task)
+        }
+        if (selected.length >= 3) break;
+    }
+    return selected;
+}
+
+
 export default function TaskListDemo(props: ITaskListDemo) {
+    const tasks = useAppSelector(({ tasks }) => get3Tasksfilter(tasks, props.projectId))
+
     return (
         <>
             <List size='sm'>
                 {
-                    [
-                        { id: 1, title: "Fix somethin very importatnt someone broke smth agn" },
-                        { id: 2, title: "Implement heartbreaking feature" },
-                        { id: 3, title: "Fix somethin very importatnt" },
-                    ].map(({ title, id }, index) =>
+                    tasks.map(({ title, id }, index) =>
                         <ListItem key={index} sx={{ alignItems: 'flex-start' }}>
                             <ListItemButton component={Link} to={`${props.projectId}/tasks/${id}`}>
                                 <ListItemContent>

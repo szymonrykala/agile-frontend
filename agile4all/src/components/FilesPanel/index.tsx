@@ -19,19 +19,20 @@ export default function FilesPanel(props: IFilesPanel) {
     const userId = useMemo(() => UsersApi.getSavedUserId(), []);
     const fileInputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
 
-
-
-    const fetchFiles = useCallback(async () => {
+    const queryParams: QueryParams = useMemo(() => {
         const params: QueryParams = {}
 
         if (props.projectId) params['projectId'] = props.projectId;
         if (props.taskId) params['taskId'] = props.taskId
+        return params
+    }, [props])
 
-        const resp = await FilesApi.getAll(params) as FileModel[]
-        console.info(resp)
-        // setFiles(resp)
 
-    }, [props.projectId, props.taskId])
+    const fetchFiles = useCallback(async () => {
+        const resp = await FilesApi.getAll(queryParams) as unknown as FileModel[]
+        setFiles(resp)
+
+    }, [queryParams])
 
     useEffect(() => {
         fetchFiles()
@@ -40,7 +41,6 @@ export default function FilesPanel(props: IFilesPanel) {
 
 
     const uploadFile = useCallback(async () => {
-        console.info('uploading a file')
         if (!fileInputRef?.current) return;
 
         const file = fileInputRef.current.files?.item(0)
@@ -58,16 +58,17 @@ export default function FilesPanel(props: IFilesPanel) {
         }
 
         try {
-            await FilesApi.uploadFile(file)
+            await FilesApi.uploadFile(file, queryParams)
             setFiles([...files, newFile])
             fileInputRef.current.value = ''
-            console.log(fileInputRef.current.files)
             fetchFiles()
         } catch (err) {
+            setFiles([])
+            fileInputRef.current.value = ''
             alert(err)
         }
 
-    }, [files, setFiles, userId, fetchFiles]);
+    }, [files, setFiles, userId, fetchFiles, queryParams]);
 
 
 

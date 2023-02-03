@@ -21,10 +21,3 @@ export interface QueryParams {
     projectId?: UUID,
     taskId?: UUID
 }
-
-
-export interface APIResponse {
-    statusCode: number,
-    data?: object | string | number | object[] | null,
-    pagination?: APIPagination
-}

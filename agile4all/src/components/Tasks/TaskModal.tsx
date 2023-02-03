@@ -3,7 +3,7 @@ import { Divider, IconButton, Option, Select, Sheet, Typography } from "@mui/joy
 import Task, { TaskStatus } from "../../models/task";
 import { getStatusColor } from "./StatusChip";
 import NamedAvatar from "./NamedAvatar";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import FilesPanel from "../FilesPanel";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
@@ -29,17 +29,23 @@ const demoTaskData = {
 
 
 export default function TaskModal() {
-    const sessionUser = useAppSelector(({ session }) => session?.user)
     const [editMode, setEditMode] = useState<boolean>(false);
     const dispatch = useAppDispatch();
     const { taskId } = useParams()
     const initTask = useAppSelector(({ tasks }) => tasks.find(({ id }) => id === Number(taskId)))
 
+    const project = useAppSelector(({ projects }) => projects.find(({ id }) => id === initTask?.projectId));
+
+    const user = useMemo(() => {
+        return project?.users.find(({ id }) => id === initTask?.userId)
+    }, [
+        initTask?.userId,
+        project?.users
+    ])
+
+
     const [task, setTask] = useState<Task>(initTask || demoTaskData);
 
-    useEffect(() => {
-
-    }, [])
 
     const deleteTask = useCallback(async () => {
         const proceed = await confirm('Do You want to delete this task?')
@@ -85,7 +91,7 @@ export default function TaskModal() {
                 bgcolor: 'background.componentBg',
             }}
         >
-            <NamedAvatar />
+            <NamedAvatar user={user} />
 
             <Sheet
                 sx={{
@@ -133,18 +139,7 @@ export default function TaskModal() {
                     onChange={updateAssignedUser}
                 >
                     {
-                        [
-                            {
-                                id: 3,
-                                email: 'firstOne@email.com'
-                            }, {
-                                id: 4,
-                                email: 'secondOne@email.com'
-                            }, {
-                                id: sessionUser?.id,
-                                email: sessionUser?.email
-                            }
-                        ].map((user, index) =>
+                        (project?.users || []).map((user, index) =>
                             <Option key={index} value={user.id}>
                                 {user.email}
                             </Option>

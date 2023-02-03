@@ -1,5 +1,5 @@
 import { UUID } from "../models/common";
-import { APIResponse, QueryParams } from "./interface";
+import { QueryParams } from "./interface";
 
 
 export interface ServiceFormData {
@@ -14,16 +14,17 @@ interface FetchData {
     body?: object
 }
 
-interface ErrorData {
-    type: string,
-    description: string
+export interface ResponseData {
+    [index: string]: any
 }
 
-export interface ResponseData {
-    statusCode: number,
-    data?: any,
-    error?: ErrorData
+export interface APIResponse {
+    isSuccess: boolean,
+    data: ResponseData | null,
+    error: string | null
 }
+
+
 
 export interface StatusMessages {
     [index: number]: string
@@ -33,8 +34,7 @@ export interface StatusMessages {
 abstract class BaseClient {
 
     private TOKEN_NAME: string = 'auth_token'; // local storage token variable name
-    // BASE_URL: string = process.env.REACT_APP_API_URL as string; // api url from env
-    protected BASE_URL: string = "https://virtserver.swaggerhub.com/SZYMONRYKALA_1/agile/1.0.0"
+    protected BASE_URL: string = process.env.REACT_APP_API_URL as string
 
 
     protected get authToken(): string {
@@ -49,9 +49,7 @@ abstract class BaseClient {
         window.localStorage.removeItem(this.TOKEN_NAME);
     }
 
-    private async _fetch(fetchObject: FetchData)
-        // : Promise<APIResponse> 
-        : Promise<object | object[]> {
+    private async _fetch(fetchObject: FetchData): Promise<ResponseData> {
         const response = await fetch(
             this.BASE_URL + fetchObject.endpoint,
             {
@@ -59,24 +57,45 @@ abstract class BaseClient {
                 cache: 'no-cache',
                 mode: 'cors',
                 headers: {
+                    'User-Agent': process.env.REACT_APP_NAME as string,
                     'Content-Type': 'application/json',
-                    // 'Authorization': this.authToken,
+                    'Authorization': this.authToken,
                 },
                 body: JSON.stringify(fetchObject.body)
             }
         );
-        let data: ResponseData = {} as ResponseData
+        let data: ResponseData = {}
+        let resp: APIResponse = {
+            isSuccess: true,
+            data: null,
+            error: null
+        };
+
         try {
-            data = await response.json() as ResponseData;
+            resp = await response.json() as APIResponse;
+
         } catch (error) {
-            console.debug(error)
+            console.error(error)
         }
+        // temp logic
+        if (Object.hasOwn(resp, 'isSuccess')) {
+            if (resp.isSuccess && resp.data) {
+                data = resp.data as ResponseData
+
+            } else if (resp.isSuccess === false && resp.error) {
+                console.warn(resp.error)
+                throw new Error(resp.error)
+            }
+        }else{
+            data = resp as ResponseData
+        }
+
 
         if (process.env.NODE_ENV !== 'production') console.debug(data);
 
         // if user is not authenticated - 
         // redirect to let sessionContext to resolve redirections
-        if (response.status === 401 && !fetchObject.endpoint.match('/auth|me|activate')) {
+        if (response.status === 401 && !fetchObject.endpoint.match('/login|register')) {
             window.location.reload();
         }
 
@@ -86,7 +105,7 @@ abstract class BaseClient {
             throw new Error(JSON.stringify(response));
         }
 
-        return data as APIResponse;
+        return data as ResponseData;
     }
 
     protected _get(endpoint: string, queryParams: QueryParams = {}) {
@@ -115,8 +134,6 @@ abstract class BaseClient {
     }
 
     protected _put(endpoint: string, body: object = {}) {
-        if (Object.keys(body).length === 0) return;
-
         return this._fetch({
             method: 'PUT',
             endpoint: endpoint,
