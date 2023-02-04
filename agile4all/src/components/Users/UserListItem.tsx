@@ -5,23 +5,21 @@ import { Link } from 'react-router-dom';
 
 
 interface IUserListItem {
-    data: User
+    user: User
 }
 
-export default function UserListItem({ data }: IUserListItem) {
-
-
+export default function UserListItem({ user }: IUserListItem) {
 
     return (
         <ListItem>
-            <ListItemButton component={Link} to={`${data.id}`}>
+            <ListItemButton component={Link} to={`${user.id}`}>
                 <ListItemDecorator sx={{ alignSelf: 'flex-start' }}>
-                    <Avatar src="/static/images/avatar/1.jpg" />
+                    <Avatar src="https://cdn-icons-png.flaticon.com/512/2202/2202112.png" />
                 </ListItemDecorator>
                 <ListItemContent>
-                    <Typography>{data.firstname} {data.lastname}</Typography>
+                    <Typography>{user.firstName} {user.lastName}</Typography>
                     <Typography level="body2" noWrap>
-                        {data.role}&nbsp;|&nbsp;{data.email}
+                        {user.role}&nbsp;|&nbsp;{user.email}
                     </Typography>
                 </ListItemContent>
             </ListItemButton>

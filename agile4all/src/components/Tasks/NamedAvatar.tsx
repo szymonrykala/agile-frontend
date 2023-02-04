@@ -4,7 +4,7 @@ import Link from "../common/Link";
 
 
 interface INamedAvatar {
-    user?: User
+    user: User
 }
 
 export default function NamedAvatar({ user }: INamedAvatar) {
@@ -16,12 +16,12 @@ export default function NamedAvatar({ user }: INamedAvatar) {
         }}>
             <Avatar
                 alt="Assigned User"
-                src=''
+                src="https://cdn-icons-png.flaticon.com/512/2202/2202112.png"
             />
             <Sheet sx={{ bgcolor: 'inherit' }}>
                 <Typography level='body2'>
                     <Link to={`/app/users/${user?.id}`}>
-                        {user?.firstname}&nbps;{user?.lastname}
+                        {user?.firstName} {user?.lastName}
                     </Link>
                 </Typography>
                 <Typography level='body3'>

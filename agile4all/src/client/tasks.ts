@@ -6,13 +6,13 @@ import ApiClient from "./ApiClient"
 
 export interface ICreateTaskData {
     projectId?: UUID,
-    title: string,
+    name: string,
     description: string,
     userId: UUID,
 }
 
 export interface IUpdateTaskData {
-    title: string,
+    name: string,
     description: string,
     userId: UUID,
     status: TaskStatus

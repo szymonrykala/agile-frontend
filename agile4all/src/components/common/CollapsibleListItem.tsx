@@ -41,22 +41,12 @@ export default function CollapsibleListItem(props: ICollapsibleListItem) {
                 marginBottom: 1.5
             }}>
                 <List sx={{
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
-                    alignItems: 'stretch',
-                    justifyContent: 'flex-start'
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 2fr))',
+
                 }}>
                     {
-                        props.children.map((node, id) => (
-                            <ListItem
-                                key={id}
-                                sx={{
-                                    maxWidth: '400px',
-                                }}
-                            >
-                                {node}
-                            </ListItem>
-                        ))
+                        props.children.map((node, id) => <ListItem key={id}>{node} </ListItem>)
                     }
                 </List>
                 <ListItemDecorator>

@@ -1,8 +1,11 @@
 import { Chip } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 import { TaskStatus } from "../../models/task";
 
 interface IStatusChip {
-    status: TaskStatus
+    status: TaskStatus,
+    sx?: SxProps,
+    variant?: 'soft' | 'solid'
 }
 
 export function getStatusColor(status: TaskStatus) {
@@ -26,6 +29,8 @@ export default function StatusChip(props: IStatusChip) {
         <Chip
             component='span'
             size="sm"
+            variant={props.variant || "solid"}
+            sx={props?.sx}
             color={getStatusColor(props.status)}
         >
             {props.status}

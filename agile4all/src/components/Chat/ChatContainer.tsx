@@ -27,7 +27,7 @@ export default function ChatContainer({ children }: IChatContainer) {
                 width: '93%',
                 maxWidth: maxWidth,
                 maxHeight: { md: '550px', sm: undefined },
-                position: { md: 'absolute', sm: 'fixed' },
+                position: 'fixed',
                 bottom: '0px',
                 right: '2vw',
                 borderRadius: 3,

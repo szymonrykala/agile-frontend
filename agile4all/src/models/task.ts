@@ -9,31 +9,21 @@ export enum TaskStatus {
     ARCHIVED = 'ARCHIVED'
 }
 
-export function taskStatusSort(ts1: Task, ts2: Task): number {
-    switch (ts1.status) {
-        case TaskStatus.TODO:
-            return -2
-        case TaskStatus.IN_PROGRESS:
-            return -1
-        case TaskStatus.DONE:
-            return 0
-        case TaskStatus.ARCHIVED:
-        default:
-            return 1
-    }
+const statusMap = {
+    [TaskStatus.IN_PROGRESS]: 1,
+    [TaskStatus.TODO]: 2,
+    [TaskStatus.DONE]: 3,
+    [TaskStatus.ARCHIVED]: 4,
 }
 
-// let arr = [TaskStatus.DONE, TaskStatus.TODO, TaskStatus.IN_PROGRESS, TaskStatus.ARCHIVED]
-// console.log(arr)
-// arr = arr.sort(taskStatusSort)
-
-// console.log(arr)
-// arr.forEach(e=>console.log(e))
+export function taskStatusSort(ts1: Task, ts2: Task): number {
+    return statusMap[ts1.status] - statusMap[ts2.status]
+}
 
 
 
 interface Task extends DataModel {
-    title: string,
+    name: string,
     description: string,
     status: Required<TaskStatus>,
     userId: UUID,

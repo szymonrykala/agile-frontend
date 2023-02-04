@@ -16,7 +16,7 @@ export default function SmallUsersList({ users }: ISmallUsersList) {
                 {
                     users.map((user, index) =>
                         <ListItem key={index} >
-                            <Tooltip title={`${user.firstname} ${user.lastname}`}>
+                            <Tooltip title={`${user.firstName} ${user.lastName}`}>
                                 <ListItemButton component={Link} to={`/app/users/${user.id}`}>
                                     <Avatar
                                         size="sm"

@@ -50,7 +50,7 @@ export default class UsersClient
         try {
             const user = await this.getOne(userId) as User
             const userProjects = await ProjectsApi.getAll({ userId: userId }) as Project[]
-            console.log(userProjects)
+
             return {
                 user: user,
                 projects: userProjects

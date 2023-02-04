@@ -17,14 +17,18 @@ const sorts = [
     },
     {
         name: 'firstname',
-        key: 'firstname'
+        key: 'firstName'
+    },
+    {
+        name: 'lastname',
+        key: 'lastName'
     },
 ]
 
 
 const filters = [
-    'id', 'email', 'firstname',
-    'lastname', 'role'
+    'id', 'email', 'firstName',
+    'lastName', 'role'
 ]
 
 

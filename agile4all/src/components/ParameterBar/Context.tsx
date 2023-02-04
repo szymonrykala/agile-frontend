@@ -4,20 +4,20 @@ import { createContext, ReactNode, useCallback, useContext, useState } from "rea
 interface IParameterBarContext<T> {
     setFilter(filter: IFilterItem<T>): void,
     setSort(sort: ISortItem<T>): void,
-    // setSearch(value: string): void
+    setSearch(value: string): void
     sort: ISortItem<T> | undefined,
     filter: IFilterItem<T> | undefined,
-    // search: string
+    search: string
 }
 
 
 export const ParameterBarContext = createContext({
     setFilter: (filter: any) => { },
     setSort: (sort: any) => { },
-    // setSearch: (value: string) => { },
+    setSearch: (value: string) => { },
     sort: undefined,
     filter: undefined,
-    // search: ''
+    search: ''
 });
 
 
@@ -42,7 +42,7 @@ export default function ParameterBarContextProvider<T>({
 }: IParameterBarContextProvider) {
     const [filter, setFilter] = useState<IFilterItem<T> | any>(undefined);
     const [sort, setSort] = useState<ISortItem<T> | any>(undefined);
-    // const [search, setSearch] = useState<string>('');
+    const [search, setSearch] = useState<string>('');
 
 
     const handleSetFilter = useCallback((filter: IFilterItem<T>) => {
@@ -55,19 +55,19 @@ export default function ParameterBarContextProvider<T>({
     }, [setSort])
 
 
-    // const handleSetSearch = useCallback((value: string) => {
-    //     setSearch(value)
-    // }, [setFilter])
+    const handleSetSearch = useCallback((value: string) => {
+        setSearch(value)
+    }, [setSearch])
 
 
     return (
         <ParameterBarContext.Provider value={{
             setFilter: handleSetFilter,
             setSort: handleSetSort,
-            // setSearch: handleSetSearch,
+            setSearch: handleSetSearch,
             filter: filter,
             sort: sort,
-            // search: search
+            search: search
         }}>
             {children}
         </ParameterBarContext.Provider>

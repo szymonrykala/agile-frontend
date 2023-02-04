@@ -1,9 +1,11 @@
 import { Delete, Edit, LinkRounded, Save } from "@mui/icons-material";
-import { Button, Divider, IconButton, List, ListItem, ListItemButton, ListItemContent, Option, Select, Sheet, Stack, Typography } from "@mui/joy";
+import { Avatar, Button, Divider, IconButton, List, ListItem, ListItemButton, ListItemContent, Option, Select, Sheet, Stack, Typography } from "@mui/joy";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { UsersApi } from "../../client";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import { UUID } from "../../models/common";
+import Project from "../../models/project";
 import User, { UserRole } from "../../models/user";
 import { remove, update } from "../../store/usersSlice";
 import EditableTextField from "../common/EditableTextField";
@@ -11,31 +13,28 @@ import Modal from "../common/Modal";
 import NamedAvatar from "../Tasks/NamedAvatar";
 
 
-const mockUSerProjects = [
-    {
-        name: 'SuperTurbo project',
-        id: -2
-    }, {
-        name: 'Kolorowe kredki',
-        id: -3
-    }
-]
 
 const demoUser: User = {
     id: -1,
     email: 'loading...',
-    firstname: 'loading...',
-    lastname: 'loading...',
+    firstName: 'loading...',
+    lastName: 'loading...',
     role: UserRole.STUDENT,
 }
 
+function selectProjectsOfUser(projects: Project[], userId: UUID) {
+    return projects.filter(({ users }) =>
+        users.find(({ id }) => id === userId)
+    )
+}
 
 export default function UserModal() {
     const navigate = useNavigate();
     const { userId } = useParams();
-
     const dispatch = useAppDispatch();
     const reduxUser = useAppSelector(({ users }) => users.find(({ id }) => id === Number(userId))) || demoUser
+    const projects = useAppSelector(({ projects }) => selectProjectsOfUser(projects, reduxUser.id))
+
 
     const [user, setUser] = useState(reduxUser);
     const [editMode, setEditMode] = useState<boolean>(false);
@@ -63,8 +62,8 @@ export default function UserModal() {
 
     const saveUser = useCallback(async () => {
         await UsersApi.update(user.id, {
-            firstName: user.firstname,
-            lastName: user.lastname,
+            firstName: user.firstName,
+            lastName: user.lastName,
             role: user.role
         })
         dispatch(update(user))
@@ -87,7 +86,7 @@ export default function UserModal() {
                 bgcolor: 'background.componentBg',
             }}
         >
-            <NamedAvatar />
+            <NamedAvatar user={user} />
             <Sheet
                 sx={{
                     display: 'flex',
@@ -106,7 +105,7 @@ export default function UserModal() {
                     disabled={!editMode}
                 >
                     <Option value={UserRole.STUDENT}>Student</Option>
-                    <Option value={UserRole.ADMIN}>Lecturer</Option>
+                    <Option value={UserRole.ADMIN}>Admin</Option>
                 </Select>
                 <Stack
                     direction='row'
@@ -139,15 +138,15 @@ export default function UserModal() {
             <Stack direction='row' spacing={1}>
                 <EditableTextField
                     title='Firstname'
-                    value={user.firstname}
+                    value={user.firstName}
                     editable={editMode}
-                    onChange={(text) => updateUserField('firstname', text)}
+                    onChange={(text) => updateUserField('firstName', text)}
                 />
                 <EditableTextField
                     title='Lastname'
-                    value={user.lastname}
+                    value={user.lastName}
                     editable={editMode}
-                    onChange={(text) => updateUserField('lastname', text)}
+                    onChange={(text) => updateUserField('lastName', text)}
                 />
             </Stack>
 
@@ -156,11 +155,16 @@ export default function UserModal() {
             </Typography>
             <List>
                 {
-                    mockUSerProjects.map((project, index) =>
+                    projects.map((project, index) =>
                         < ListItem key={index}>
                             <ListItemButton component={Link} to={`/app/projects/${project.id}`}>
                                 <ListItemContent>
-                                    <Typography>
+                                    <Typography startDecorator={
+                                        <Avatar
+                                            title={project.name}
+                                            src="https://th.bing.com/th/id/R.75f9b714fb48bdf6c7c758dbc7f391e6?rik=BNp%2bziTPLYnx3g&pid=ImgRaw&r=0"
+                                        />
+                                    }>
                                         {project.name}
                                     </Typography>
                                 </ListItemContent>

@@ -20,7 +20,7 @@ import { useParams } from "react-router";
 
 const demoTaskData = {
     description: `loading...`,
-    title: `loading...`,
+    name: `loading...`,
     id: -1,
     projectId: -1,
     status: TaskStatus.ARCHIVED,
@@ -61,7 +61,7 @@ export default function TaskModal() {
             try {
                 await TasksApi.update(task.id, {
                     description: task.description,
-                    title: task.title,
+                    name: task.name,
                     status: task.status,
                     userId: Number(task.userId)
                 })
@@ -91,7 +91,7 @@ export default function TaskModal() {
                 bgcolor: 'background.componentBg',
             }}
         >
-            <NamedAvatar user={user} />
+            {user && <NamedAvatar user={user} />}
 
             <Sheet
                 sx={{
@@ -151,8 +151,8 @@ export default function TaskModal() {
             <EditableTextArea
                 title="Title:"
                 editable={editMode}
-                value={task.title}
-                onChange={(value) => setTask({ ...task, title: value })}
+                value={task.name}
+                onChange={(value) => setTask({ ...task, name: value })}
             />
 
             <EditableTextArea

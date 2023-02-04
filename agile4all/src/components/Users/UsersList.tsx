@@ -9,18 +9,21 @@ import UserListItem from './UserListItem';
 
 
 export default function UsersList() {
-    const { sort } = useParameterBarContext<User>();
+    const { sort, filter } = useParameterBarContext<User>();
     const users = useAppSelector(({ users }) => users);
 
     const filteredUsers = useMemo(() => {
-        const localUsers = [...users];
+        let localUsers = [...users];
 
         if (sort?.key) {
-            return localUsers.sort((u1, u2) => (u1[sort.key] as any) - (u2[sort.key] as any));
-        } else {
+            if (filter?.value) {
+                localUsers = localUsers.filter((user) => String(user[filter.key]).match(RegExp(filter.value || '', 'ig')))
+            }
+            localUsers.sort((u1, u2) => String(u1[sort.key]).localeCompare('' + u2[sort.key]));
             return localUsers
         }
-    }, [sort?.key, users])
+        return localUsers
+    }, [sort?.key, users, filter])
 
 
     return (
@@ -29,7 +32,7 @@ export default function UsersList() {
             <List
                 sx={{ '--List-decorator-size': '56px', gap: 1, maxWidth: '600px' }}
             >
-                {filteredUsers.map((user, index) => <UserListItem key={index} data={user} />)}
+                {filteredUsers.map((user, index) => <UserListItem key={index} user={user} />)}
             </List>
         </Sheet>
     )

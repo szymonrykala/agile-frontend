@@ -1,5 +1,5 @@
 import { Input, Option, Select, Sheet, Stack, Typography } from "@mui/joy";
-import { useCallback, useLayoutEffect, useState } from "react";
+import { useCallback, useLayoutEffect } from "react";
 import { ISortItem, useParameterBarContext } from "./Context";
 import FilterItem from "./ParameterItem";
 
@@ -20,17 +20,14 @@ interface IParameterBar<T> {
 export default function ParameterBar<T>({ sorts, filters, init }: IParameterBar<T>) {
     const { setSort, setFilter, filter, sort } = useParameterBarContext<T>();
 
-    const [filterStr, setFilterStr] = useState<string>('');
-    const [trigger, setTrigger] = useState<any>();
-
     useLayoutEffect(() => {
         filters && typeof init.filter === 'number' && setFilter({ key: filters[init.filter], value: '' });
         sorts && typeof init.sort === 'number' && setSort(sorts[init.sort]);
         // search && init.search && setSearch(init.search);
     }, [
         sorts,
-        filters, 
-        init.sort, 
+        filters,
+        init.sort,
         init.filter,
         setSort,
         setFilter
@@ -38,17 +35,9 @@ export default function ParameterBar<T>({ sorts, filters, init }: IParameterBar<
 
 
     const delayedUpdateFilterValue = useCallback((evt: React.ChangeEvent<HTMLInputElement>) => {
-        setFilterStr(evt.target.value);
-
-        clearTimeout(trigger);
-        let timer = setTimeout(() => {
-            filter && setFilter({ ...filter, value: filterStr });
-        }, 1000);
-        setTrigger(timer);
+        setFilter({ ...filter, value: String(evt.target.value) } as any);
     }, [
         filter,
-        filterStr,
-        trigger,
         setFilter
     ])
 
@@ -102,7 +91,7 @@ export default function ParameterBar<T>({ sorts, filters, init }: IParameterBar<
                     </Typography>
                     <Input
                         size="sm"
-                        value={filterStr}
+                        value={filter?.value || ''}
                         onChange={delayedUpdateFilterValue}
                         placeholder='filter value'
                         sx={{

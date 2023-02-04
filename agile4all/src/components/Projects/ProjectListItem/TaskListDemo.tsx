@@ -1,9 +1,10 @@
-import { List, ListItem, ListItemButton, ListItemContent, Typography, Chip, Button } from "@mui/joy";
+import { List, ListItem, ListItemButton, ListItemContent, Typography, Button } from "@mui/joy";
 import { Link } from "react-router-dom";
 import { UUID } from "../../../models/common";
 import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
 import Task, { taskStatusSort } from "../../../models/task";
 import { useAppSelector } from "../../../hooks";
+import StatusChip from "../../Tasks/StatusChip";
 
 
 interface ITaskListDemo {
@@ -31,7 +32,7 @@ export default function TaskListDemo(props: ITaskListDemo) {
         <>
             <List size='sm'>
                 {
-                    tasks.map(({ title, id }, index) =>
+                    tasks.map(({ name, id, status }, index) =>
                         <ListItem key={index} sx={{ alignItems: 'flex-start' }}>
                             <ListItemButton component={Link} to={`${props.projectId}/tasks/${id}`}>
                                 <ListItemContent>
@@ -40,16 +41,10 @@ export default function TaskListDemo(props: ITaskListDemo) {
                                         overflow: 'hidden',
                                         whiteSpace: 'nowrap'
                                     }}>
-                                        {id}&nbsp;-&nbsp;{title}
+                                        {id}&nbsp;-&nbsp;{name}
                                     </Typography>
                                 </ListItemContent>
-                                <Chip
-                                    variant='soft'
-                                    color='primary'
-                                    size='sm'
-                                >
-                                    in progress
-                                </Chip>
+                                <StatusChip status={status} variant='soft' />
                             </ListItemButton>
                         </ListItem>
                     )

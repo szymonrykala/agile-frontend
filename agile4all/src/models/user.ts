@@ -9,8 +9,8 @@ export enum UserRole {
 
 interface User extends DataModel{
     email: string,
-    firstname: string,
-    lastname: string,
+    firstName: string,
+    lastName: string,
     role: UserRole
 }
 

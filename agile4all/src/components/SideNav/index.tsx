@@ -73,6 +73,7 @@ export default function SideNav() {
           sx={{
             '& .JoyListItemButton-root': { p: '8px' },
           }}
+          size='md'
         >
           {
             links.map(({ link, name, Icon }) => (

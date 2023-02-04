@@ -1,127 +1,67 @@
-import { List, Sheet, Typography } from "@mui/joy";
+import { Button, List, Sheet, Typography } from "@mui/joy";
 import Link from "../common/Link";
 import TaskCard from "../Tasks/TaskCard";
 import CollapsibleListItem from "../common/CollapsibleListItem";
 import { Outlet, useParams } from "react-router";
 import ParameterBar from "../ParameterBar";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { TasksApi } from '../../client';
-import Task, { taskStatusSort } from "../../models/task";
+import Task, { TaskStatus, taskStatusSort } from "../../models/task";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { UUID } from "../../models/common";
 import { load } from "../../store/taskSlice";
 import { ICreateTaskData } from "../../client/tasks";
 import FilesPanel from "../FilesPanel";
-import ParameterBarContextProvider, { ISortItem } from "../ParameterBar/Context";
+import ParameterBarContextProvider, { ISortItem, useParameterBarContext } from "../ParameterBar/Context";
 import AddListItem from "../common/AddListItem";
 import { useReloadTrigger } from "../common/ReloadTrigger";
 import { QueryParams } from "../../client/interface";
 import Project from "../../models/project";
-import User from "../../models/user";
 
 
-interface IProjectListItem {
-    tasks: Task[],
+interface IProjectTasksListItem {
     project: {
         name: string,
         id: UUID
     }
 }
 
-
-function TaskListItem({ project, tasks }: IProjectListItem) {
-    const { reload } = useReloadTrigger()
-    const sessionUser = useAppSelector(({ session }) => session?.user)
-
-
-    const sortedTasks = useMemo(() => {
-        return tasks.sort(taskStatusSort)
-    }, [tasks])
-
-
-    const createTask = useCallback(async (projectId: UUID) => {
-        const title: string = prompt('type a task title') || 'created task';
-
-        const task: ICreateTaskData = {
-            title: title,
-            description: "What needs to be done??",
-            userId: sessionUser?.id || -1,
-            projectId: projectId
-        }
-        await TasksApi.create(task)
-        reload('tasks')
-    }, [sessionUser?.id, reload]);
-
-
-    return (
-        <CollapsibleListItem
-            open={true}
-            header={
-                <Typography
-                    component={Link}
-                    to={`/app/projects/${project.id}`}
-                >
-                    {project.name}
-                </Typography>
-            }
-            footer={
-                <Sheet sx={{ bgcolor: 'inherit' }}>
-                    <Typography level="body2">
-                        Project files:
-                    </Typography>
-                    <FilesPanel files={[]} />
-                </Sheet>
-            }
-        >
-            {
-                sortedTasks.map((task, index) => <TaskCard data={task} key={`task-${index}`} />)
-            }
-
-            <AddListItem component='div' onClick={() => createTask(sortedTasks[0].projectId)} />
-        </CollapsibleListItem>
-    )
-}
-
-const filters = [
-    'title', 'description'
-]
-
-const sorts: ISortItem<Task>[] = [
-    {
-        name: 'Project',
-        key: 'projectId',
-    },
-    {
-        name: 'Status',
-        key: 'status',
-    },
-]
-
-
-function selectProjects(projects: Project[], users: User[], queryParams: QueryParams) {
+function selectTasks(tasks: Task[], queryParams: QueryParams) {
     if (queryParams?.projectId) {
-        return projects.filter(({ id }) => id === queryParams.projectId)
+        return tasks.filter(({ projectId }) => projectId === Number(queryParams.projectId))
 
     } else if (queryParams?.userId) {
-        return projects.filter(({ users }) =>
-            users.map(({ id }) => id).includes(queryParams.userId as number)
-        )
+        return tasks.filter(({ userId }) => userId === Number(queryParams.userId))
     } else {
         return []
     }
 }
 
-
-export default function Tasks() {
-    const queryParams = useParams();
+function ProjectTasksListItem({ project }: IProjectTasksListItem) {
     const trigger = useReloadTrigger()
-    // const sessionUser = useAppSelector(({ session }) => session?.user)
-    const projects = useAppSelector(({ projects, users }) =>
-        selectProjects(projects, users, queryParams)
-    );
-    const tasks = useAppSelector(({ tasks }) => tasks);
+    const queryParams = useParams();
     const dispatch = useAppDispatch();
+    const { filter } = useParameterBarContext<Task>();
+    const [hideArchived, sethideArchived] = useState<boolean>(false)
 
+    const sessionUser = useAppSelector(({ session }) => session?.user)
+
+    const tasks = useAppSelector(({ tasks }) => selectTasks(
+        tasks.filter(({ projectId }) => projectId === project.id),
+        queryParams
+    ));
+
+    const sortedTasks = useMemo(() => {
+        let localTasks = tasks;
+        if (hideArchived) {
+            localTasks = localTasks.filter(({ status }) => status !== TaskStatus.ARCHIVED)
+        }
+        localTasks.sort(taskStatusSort)
+        if (filter && filter.value) {
+            return localTasks.filter((task) => String(task[filter.key]).match(RegExp(filter.value || '', 'gi')))
+        }
+        return localTasks
+    }, [tasks, filter, hideArchived])
 
     const getTasks = useCallback(async () => {
         try {
@@ -138,6 +78,94 @@ export default function Tasks() {
         getTasks()
     }, [getTasks, trigger.tasks])
 
+    const createTask = useCallback(async (projectId: UUID) => {
+        const title = prompt('type a task title');
+
+        if (title) {
+            const task: ICreateTaskData = {
+                name: title,
+                description: "What needs to be done??",
+                userId: sessionUser?.id || -1,
+                projectId: projectId
+            }
+            await TasksApi.create(task)
+            trigger.reload('tasks')
+        }
+    }, [sessionUser?.id, trigger]);
+
+
+    const renderedTasks = useMemo(() => {
+        const tasks = sortedTasks.map((task, index) => <TaskCard task={task} key={`task-${index}`} />)
+        tasks.push(< AddListItem key={'4o5689'} component='div' onClick={() => createTask(sortedTasks[0].projectId)} />)
+        return tasks;
+    }, [sortedTasks, createTask])
+
+
+    return (
+        <CollapsibleListItem
+            open={true}
+            header={
+                <>
+                    <Typography
+                        component={Link}
+                        to={`/app/projects/${project.id}`}
+                    >
+                        {project.name}
+                    </Typography>&nbsp;&nbsp;
+                    <Button size='sm' variant={hideArchived ? "soft" : "outlined"} onClick={() => sethideArchived(!hideArchived)}>
+                        hide archived
+                    </Button>
+                </>
+            }
+            footer={
+                <Sheet sx={{ bgcolor: 'inherit' }}>
+                    <Typography level="body2">
+                        Project files:
+                    </Typography>
+                    <FilesPanel files={[]} />
+                </Sheet>
+            }
+        >
+            {renderedTasks}
+        </CollapsibleListItem>
+    )
+}
+
+const filters = [
+    'description', 'name', 'status', 'id'
+]
+
+const sorts: ISortItem<Task>[] = [
+    {
+        name: 'Project',
+        key: 'projectId',
+    }
+]
+
+
+function selectProjects(projects: Project[], queryParams: QueryParams) {
+    if (queryParams?.projectId) {
+        return projects.filter(({ id }) => id === Number(queryParams.projectId))
+
+    } else if (queryParams?.userId) {
+        return projects.filter(({ users }) =>
+            users.map(({ id }) => id).includes(Number(queryParams.userId))
+        )
+    } else {
+        return []
+    }
+}
+
+
+export default function Tasks() {
+    const queryParams = useParams();
+    // const sessionUser = useAppSelector(({ session }) => session?.user)
+    const projects = useAppSelector(({ projects }) =>
+        selectProjects(projects, queryParams)
+    );
+
+
+
 
     return (
         <ParameterBarContextProvider<Task>>
@@ -150,7 +178,7 @@ export default function Tasks() {
                     </Typography>
                     :
                     projects && projects.map((project, index) =>
-                        <TaskListItem tasks={tasks} project={project} key={index} />
+                        <ProjectTasksListItem project={project} key={`tl${index}`} />
                     )
                 }
             </List>

@@ -1,24 +1,35 @@
 import { Card, Typography } from "@mui/joy";
+import { useAppSelector } from "../../hooks";
+import Project from "../../models/project";
 import Task from "../../models/task";
+import User from "../../models/user";
 import Link from "../common/Link";
 import StatusChip from "./StatusChip";
 
 
 interface ITaskCard {
-    data: Task
+    task: Task
 }
 
-export default function TaskCard({ data }: ITaskCard) {
+
+function selectUserOfTask(projects: Project[], task: Task): User | undefined {
+    const project = projects.find(({ id }) => id === task.projectId)
+    return project?.users.find(({ id }) => id === task.userId)
+}
+
+export default function TaskCard({ task }: ITaskCard) {
+    const user = useAppSelector(({ projects }) => selectUserOfTask(projects, task))
+
     return (
         <Card sx={{
             maxWidth: 'inherit',
             bgcolor: 'background.componentBg',
         }}>
             <Typography level='body2' marginBottom={1}>
-                <StatusChip status={data.status} />
+                <StatusChip status={task.status} />
                 &nbsp;
-                <Link to={`/app/users/${data.userId}`}>
-                    Assigned User
+                <Link to={`/app/users/${task.userId}`}>
+                    {`${user?.firstName} ${user?.lastName}`}
                 </Link>
             </Typography>
 
@@ -30,10 +41,10 @@ export default function TaskCard({ data }: ITaskCard) {
                 maxWidth='250px'
                 marginBottom={1}
             >
-                <Link to={`${data.id}`}>
-                    {data.id}-
+                <Link to={`${task.id}`}>
+                    {task.id}-
                 </Link>
-                {data.title}
+                {task.name}
             </Typography>
 
             <Typography
@@ -42,9 +53,9 @@ export default function TaskCard({ data }: ITaskCard) {
                 overflow='hidden'
                 maxHeight='110px'
             >
-                {data.description}
+                {task.description}
             </Typography>
-            <Link to={`${data.id}`}>see more...</Link>
+            <Link to={`${task.id}`}>see more...</Link>
         </Card>
     )
 }
