@@ -14,6 +14,8 @@ interface ITaskListDemo {
 
 function get3Tasksfilter(tasks: Task[], projectId: UUID) {
     const selected: Task[] = []
+    // console.log(tasks)
+    if (Boolean(tasks)) return selected;
 
     for (const task of tasks.sort(taskStatusSort)) {
         if (task.projectId === projectId) {
