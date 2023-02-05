@@ -1,8 +1,7 @@
 import { Typography } from "@mui/joy";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { UsersApi } from "../../client";
-import { useAppDispatch, useAppSelector } from "../../hooks";
-import { load } from "../../store/chatSlice";
+import { useAppSelector } from "../../hooks";
 import ChatContainer from "./ChatContainer";
 import Message from "./Message";
 
@@ -10,18 +9,6 @@ import Message from "./Message";
 function Chat() {
     const messages = useAppSelector(({ chat }) => chat);
     const userId = useMemo(() => UsersApi.getSavedUserId(), []);
-    const dispatch = useAppDispatch()
-
-    useEffect(() => {
-        const message = {
-            text: 'spoko ale wymaga bardzo dużo pracy a ciężko się na długo najeść',
-            userId: -1,
-            date: '12:55:40 AM',
-            sender: 'user@example.com'
-        }
-        dispatch(load([message]))
-        // fetching messages at start
-    }, [dispatch]);
 
     return (
         <ChatContainer>

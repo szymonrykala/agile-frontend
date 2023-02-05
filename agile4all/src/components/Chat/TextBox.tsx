@@ -1,9 +1,10 @@
 import SendIcon from '@mui/icons-material/Send';
-import { IconButton, Sheet, Textarea } from "@mui/joy";
-import { FormEventHandler, RefObject, useCallback, useState } from 'react';
+import { IconButton, Input, Sheet } from "@mui/joy";
+import { FormEventHandler, RefObject, useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { ChatMessage } from '../../models/chat';
+import { ChatMessage, WSMessage, WSMessageType } from '../../models/chat';
 import { add, leaveMessages } from '../../store/chatSlice';
+import { useChatContext } from './Context';
 
 
 interface ITextBox {
@@ -13,8 +14,31 @@ interface ITextBox {
 
 export default function TextBox({ messagesContainer }: ITextBox) {
     const dispatch = useAppDispatch();
+    const { socket } = useChatContext();
     const [text, setText] = useState<string>('');
     const user = useAppSelector(({ session }) => session?.user)
+
+
+    const sendMessageToWS = useCallback((data: ChatMessage) => {
+        if (!socket?.OPEN) {
+            console.info('ws connection is closed.');
+            return;
+        }
+        const mess: WSMessage = {
+            type: WSMessageType.MESSAGE,
+            payload: data
+        }
+
+        socket.send(JSON.stringify(mess))
+    }, [socket])
+
+
+    const scrollChat = useCallback(() =>{
+        messagesContainer?.current?.scrollTo(0, Number.MAX_SAFE_INTEGER)
+    },
+        [messagesContainer]
+    )
+
 
     const submitMessage: FormEventHandler<HTMLFormElement> = useCallback((event) => {
         event.preventDefault();
@@ -28,14 +52,28 @@ export default function TextBox({ messagesContainer }: ITextBox) {
         if (text.length > 0) {
             dispatch(add(message));
             dispatch(leaveMessages(50))
+            sendMessageToWS(message)
             setText('');
         }
 
-        // timeout - we need to wait for the message to be appended in to the list 
-        // so the container can recalculate its height
-        setTimeout(() => messagesContainer?.current?.scrollTo(0, 9999999), 300)
+        setTimeout(scrollChat, 300)
+    }, [
+        text,
+        user,
+        dispatch,
+        sendMessageToWS,
+        scrollChat
+    ]);
 
-    }, [text, user, dispatch, messagesContainer]);
+
+    useEffect(() => {
+        const el = document.getElementById('agile-chat-message')
+
+        el?.addEventListener('click', scrollChat);
+        return () => {
+            el?.removeEventListener('click', scrollChat);
+        }
+    }, [scrollChat]);
 
     return (
         <Sheet
@@ -48,14 +86,15 @@ export default function TextBox({ messagesContainer }: ITextBox) {
                 gap: 1,
             }}>
 
-            <Textarea
+            <Input
+                id="agile-chat-message"
+                name="message"
                 color="neutral"
-                minRows={2}
-                maxRows={2}
                 placeholder="Type message ..."
-                size="md"
+                size="lg"
                 variant="soft"
                 value={text}
+                type='text'
                 onChange={({ target }) => setText(target.value)}
                 sx={{
                     width: '-webkit-fill-available',
@@ -64,6 +103,7 @@ export default function TextBox({ messagesContainer }: ITextBox) {
 
             <IconButton
                 type='submit'
+                size='lg'
                 sx={{ justifySelf: 'flex-end' }}
             >
                 <SendIcon />

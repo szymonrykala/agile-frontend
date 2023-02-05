@@ -30,7 +30,7 @@ export default function ChatContainer({ children }: IChatContainer) {
                 position: 'fixed',
                 bottom: '0px',
                 right: '2vw',
-                borderRadius: 3,
+                borderRadius: 5,
                 padding: 1,
                 bgcolor: 'background.componentBg',
                 gap: 1,
@@ -80,8 +80,7 @@ export default function ChatContainer({ children }: IChatContainer) {
                         gap: '3px',
                         maxWidth: maxWidth,
                         bgcolor: 'inherit',
-                        overflowY: 'auto',
-                        scrollBehavior: 'smooth',
+                        overflowY: 'auto'
                     }}>
                     {children}
                 </Sheet>

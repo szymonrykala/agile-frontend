@@ -12,7 +12,7 @@ export const chatSlice = createSlice({
             return messages;
         },
         load: (messages, action: PayloadAction<ChatMessage[]>) => {
-            return [...messages, ...action.payload];
+            return action.payload;
         },
         leaveMessages: (messages, action: PayloadAction<number>) => {
             return messages.slice(-action.payload)

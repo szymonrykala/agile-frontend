@@ -12,8 +12,8 @@ export default function Message({ text, mine, sender = '', userId = -1, date }: 
         color={mine ? "primary" : 'neutral'}
         variant="soft"
         sx={{
-            padding: '5px',
-            borderRadius: 3,
+            padding: '5px 8px',
+            borderRadius: 5,
             width: 'max-content',
             maxWidth: '80%',
             alignSelf: mine ? 'flex-end' : 'flex-start',
