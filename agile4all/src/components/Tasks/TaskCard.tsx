@@ -1,4 +1,4 @@
-import { Card, Typography } from "@mui/joy";
+import { Sheet, Typography } from "@mui/joy";
 import { useAppSelector } from "../../hooks";
 import Project from "../../models/project";
 import Task from "../../models/task";
@@ -21,9 +21,11 @@ export default function TaskCard({ task }: ITaskCard) {
     const user = useAppSelector(({ projects }) => selectUserOfTask(projects, task))
 
     return (
-        <Card sx={{
-            maxWidth: 'inherit',
+        <Sheet sx={{
+            p:2,
+            borderRadius:10,
             bgcolor: 'background.componentBg',
+            width: '100%',
         }}>
             <Typography level='body2' marginBottom={1}>
                 <StatusChip status={task.status} />
@@ -35,14 +37,15 @@ export default function TaskCard({ task }: ITaskCard) {
 
             <Typography
                 level='body2'
-                textOverflow='ellipsis'
-                overflow='hidden'
-                whiteSpace='nowrap'
-                maxWidth='250px'
+                sx={{
+                    overflow: 'hidden',
+                    wordBreak: 'break-word',
+                    textOverflow: 'ellipsis',
+                }}
                 marginBottom={1}
             >
                 <Link to={`${task.id}`}>
-                    {task.id}-
+                    A4A-{task.id}-
                 </Link>
                 {task.name}
             </Typography>
@@ -51,11 +54,12 @@ export default function TaskCard({ task }: ITaskCard) {
                 level='body2'
                 textOverflow='ellipsis'
                 overflow='hidden'
-                maxHeight='110px'
+                maxHeight='60px'
             >
                 {task.description}
             </Typography>
+            <br/>
             <Link to={`${task.id}`}>see more...</Link>
-        </Card>
+        </Sheet>
     )
 }

@@ -33,7 +33,7 @@ function SessionController(props: ISessionController) {
             //     navigate('/login')
             // } else throw e
             navigate('/login');
-            throw e;
+            console.info('No active user session')
         }
         // there is no need to check session on each route change    
         // eslint-disable-next-line react-hooks/exhaustive-deps    

@@ -1,7 +1,7 @@
 import { List, ListItem, ListItemContent, IconButton, Typography, Stack, Avatar, ListItemDecorator } from "@mui/joy";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import { ProjectsApi } from "../../client";
-import { useAppDispatch, useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector} from "../../hooks";
 import { UUID } from "../../models/common";
 import User from "../../models/user";
 import EditableTextField from "../common/EditableTextField";
@@ -58,7 +58,6 @@ export default function ProjectUsersList({ projectId, users }: IProjectUsersList
     ))
 
     const dispatch = useAppDispatch()
-
     const [search, setSearch] = useState<string>('');
 
     const filteredAllUsers = useMemo(() => {
@@ -85,11 +84,8 @@ export default function ProjectUsersList({ projectId, users }: IProjectUsersList
         await ProjectsApi.removeUser(projectId, id)
 
         dispatch(removeUser({ projectId: projectId, userId: id }))
-
-        const index = localUsers.findIndex((user) => user.id !== id);
-        console.log(index)
-        localUsers.splice(index, 1);
-        setLocalUsers([...localUsers]);
+        const newUsers = localUsers.filter((user) => user.id !== id)
+        setLocalUsers(newUsers);
     }, [
         projectId,
         localUsers,
@@ -147,6 +143,7 @@ export default function ProjectUsersList({ projectId, users }: IProjectUsersList
                     )
                 }
             </List>
+
         </>
     )
 }

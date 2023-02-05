@@ -10,9 +10,10 @@ import EditableTextField from "../common/EditableTextField";
 import EditableTextArea from "../common/EditableTextArea";
 import Project from "../../models/project";
 import ProjectUsersList from "./ProjectUsersList";
-import { useAppDispatch, useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector, useCheckAdmin } from "../../hooks";
 import { ProjectsApi } from "../../client";
 import { remove, update } from "../../store/projectSlice";
+import SmallUsersList from "./ProjectListItem/SmallUsersList";
 
 
 
@@ -20,7 +21,6 @@ const demoProject: Project = {
     id: -1,
     name: 'loading...',
     description: 'loading...',
-    files: [],
     users: []
 }
 
@@ -30,6 +30,8 @@ export default function ProjectModal() {
     const dispatch = useAppDispatch();
     const [editMode, setEditMode] = useState<boolean>(false);
     const navigate = useNavigate();
+    const isAdmin = useCheckAdmin()
+
 
     const reduxProject: Project = useAppSelector(({ projects }) =>
         projects.find(({ id }) => id === Number(projectId)
@@ -66,7 +68,8 @@ export default function ProjectModal() {
             title='user window'
             description='detailed task window'
             sx={{
-                width: '500px',
+                maxWidth: '700px',
+                width: '90%',
                 bgcolor: 'background.componentBg',
             }}
         >
@@ -90,17 +93,21 @@ export default function ProjectModal() {
                 >
                     Show tasks
                 </Button>
-                <IconButton onClick={() => setEditMode(!editMode)}>
-                    <EditIcon />
-                </IconButton>
+                {
+                    isAdmin && <>
+                        <IconButton onClick={() => setEditMode(!editMode)}>
+                            <EditIcon />
+                        </IconButton>
 
-                <IconButton onClick={saveProject} color='success'>
-                    <SaveIcon />
-                </IconButton>
+                        <IconButton onClick={saveProject} color='success'>
+                            <SaveIcon />
+                        </IconButton>
 
-                <IconButton onClick={deleteProject} color='danger'>
-                    <DeleteIcon />
-                </IconButton>
+                        <IconButton onClick={deleteProject} color='danger'>
+                            <DeleteIcon />
+                        </IconButton>
+                    </>
+                }
             </Sheet>
 
             <EditableTextField
@@ -118,9 +125,12 @@ export default function ProjectModal() {
                 onChange={(value) => setProject({ ...project, description: value })}
             />
 
-            <ProjectUsersList projectId={Number(projectId)} users={project.users} />
+            {isAdmin ?
+                <ProjectUsersList projectId={Number(projectId)} users={project.users} />
+                : <SmallUsersList users={project.users} />
+            }
 
-            <FilesPanel files={[]} />
+            <FilesPanel/>
         </Modal>
     )
 }

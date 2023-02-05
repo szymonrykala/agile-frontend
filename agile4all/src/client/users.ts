@@ -43,9 +43,9 @@ export default class UsersClient
     }
 
     async readUserFromSession(): Promise<Session> {
-        const userId: number = Number(localStorage.getItem(this.userIdKey))
+        const userId: number = this.getSavedUserId()
 
-        if (userId === null) throw new NoValidUserSessionError()
+        if (userId === -1) throw new NoValidUserSessionError()
 
         try {
             const user = await this.getOne(userId) as User

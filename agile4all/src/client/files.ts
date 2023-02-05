@@ -24,9 +24,16 @@ export default class FilesClient extends ApiClient<{}, {}> {
     public path: string = '/files'
 
     async uploadFile(file: File, queryParams: QueryParams = {}) {
-        var data = new FormData()
+        const data = new FormData()
         data.append('file', file)
 
-        return this._post(this.path + '?' + new URLSearchParams(queryParams as any).toString(), data)
+        return this._fetch({
+            method: 'POST',
+            endpoint: this.path + '?' + new URLSearchParams(queryParams as any).toString(),
+            formData: data,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
     }
 }

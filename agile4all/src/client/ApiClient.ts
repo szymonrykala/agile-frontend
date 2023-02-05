@@ -12,6 +12,8 @@ interface FetchData {
     endpoint: string,
     queryParams?: QueryParams,
     body?: object
+    headers?: object,
+    formData?: FormData
 }
 
 export interface ResponseData {
@@ -49,7 +51,7 @@ abstract class BaseClient {
         window.localStorage.removeItem(this.TOKEN_NAME);
     }
 
-    private async _fetch(fetchObject: FetchData): Promise<ResponseData> {
+    protected async _fetch(fetchObject: FetchData): Promise<ResponseData> {        
         const response = await fetch(
             this.BASE_URL + fetchObject.endpoint,
             {
@@ -60,8 +62,9 @@ abstract class BaseClient {
                     'User-Agent': process.env.REACT_APP_NAME as string,
                     'Content-Type': 'application/json',
                     'Authorization': this.authToken,
+                    ...fetchObject.headers
                 },
-                body: JSON.stringify(fetchObject.body)
+                body: fetchObject.formData ?? JSON.stringify(fetchObject.body)
             }
         );
         let data: ResponseData = {}
@@ -86,7 +89,7 @@ abstract class BaseClient {
                 console.warn(resp.error)
                 throw new Error(resp.error)
             }
-        }else{
+        } else {
             data = resp as ResponseData
         }
 
@@ -96,7 +99,7 @@ abstract class BaseClient {
         // if user is not authenticated - 
         // redirect to let sessionContext to resolve redirections
         if (response.status === 401 && !fetchObject.endpoint.match('/login|register')) {
-            window.location.reload();
+            alert("No access - You need to have an admin rights.");
         }
 
         if (!response.ok) {

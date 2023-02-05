@@ -5,27 +5,18 @@ import File from './File';
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FilesApi, UsersApi } from "../../client";
 import { UUID } from "../../models/common";
-import { QueryParams } from "../../client/interface";
+import { useParams } from "react-router";
 
 
 interface IFilesPanel {
-    files: FileModel[],
-    projectId?: UUID,
-    taskId?: UUID
+    files?: FileModel[],
 }
 
 export default function FilesPanel(props: IFilesPanel) {
-    const [files, setFiles] = useState<FileModel[]>(props.files)
+    const queryParams = useParams();
+    const [files, setFiles] = useState<FileModel[]>(props.files || [])
     const userId = useMemo(() => UsersApi.getSavedUserId(), []);
     const fileInputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
-
-    const queryParams: QueryParams = useMemo(() => {
-        const params: QueryParams = {}
-
-        if (props.projectId) params['projectId'] = props.projectId;
-        if (props.taskId) params['taskId'] = props.taskId
-        return params
-    }, [props])
 
 
     const fetchFiles = useCallback(async () => {
@@ -61,14 +52,14 @@ export default function FilesPanel(props: IFilesPanel) {
             await FilesApi.uploadFile(file, queryParams)
             setFiles([...files, newFile])
             fileInputRef.current.value = ''
-            fetchFiles()
+
         } catch (err) {
             setFiles([])
             fileInputRef.current.value = ''
             alert(err)
         }
 
-    }, [files, setFiles, userId, fetchFiles, queryParams]);
+    }, [files, setFiles, userId, queryParams]);
 
 
 
@@ -87,10 +78,8 @@ export default function FilesPanel(props: IFilesPanel) {
 
     const loadFile = useCallback(() => {
         if (fileInputRef?.current) {
-            console.log(fileInputRef.current)
             fileInputRef.current.click()
         }
-
     }, []);
 
 
@@ -118,7 +107,7 @@ export default function FilesPanel(props: IFilesPanel) {
                 />)
             }
             <Sheet sx={{ bgcolor: 'inherit' }}>
-                <input style={{ display: 'none' }} type='file' ref={fileInputRef} />
+                <input style={{ display: 'none' }} type='file' name="file" ref={fileInputRef} />
                 <IconButton
                     onClick={loadFile}
                     variant="soft"

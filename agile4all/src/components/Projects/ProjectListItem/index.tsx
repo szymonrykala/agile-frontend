@@ -19,7 +19,7 @@ interface IProjectItem {
 
 
 export default function ProjectListItem({ data }: IProjectItem) {
-    
+
 
     return (
         <Sheet
@@ -42,7 +42,7 @@ export default function ProjectListItem({ data }: IProjectItem) {
             </Box>
             <br />
             <Box>
-                <Typography level="body2" >
+                <Typography level="body2" sx={{ maxHeight: '200px', overflowY: 'clip' }}>
                     {data.description}
                 </Typography>
             </Box>

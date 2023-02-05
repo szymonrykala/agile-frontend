@@ -1,4 +1,4 @@
-import { Button, List, Sheet, Typography } from "@mui/joy";
+import { Button, List, Typography } from "@mui/joy";
 import Link from "../common/Link";
 import TaskCard from "../Tasks/TaskCard";
 import CollapsibleListItem from "../common/CollapsibleListItem";
@@ -11,7 +11,6 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { UUID } from "../../models/common";
 import { load } from "../../store/taskSlice";
 import { ICreateTaskData } from "../../client/tasks";
-import FilesPanel from "../FilesPanel";
 import ParameterBarContextProvider, { ISortItem, useParameterBarContext } from "../ParameterBar/Context";
 import AddListItem from "../common/AddListItem";
 import { useReloadTrigger } from "../common/ReloadTrigger";
@@ -96,9 +95,9 @@ function ProjectTasksListItem({ project }: IProjectTasksListItem) {
 
     const renderedTasks = useMemo(() => {
         const tasks = sortedTasks.map((task, index) => <TaskCard task={task} key={`task-${index}`} />)
-        tasks.push(< AddListItem key={'4o5689'} component='div' onClick={() => createTask(sortedTasks[0].projectId)} />)
+        tasks.push(< AddListItem key={'4o5689'} component='div' onClick={() => createTask(project.id)} />)
         return tasks;
-    }, [sortedTasks, createTask])
+    }, [sortedTasks, project.id, createTask])
 
 
     return (
@@ -116,14 +115,6 @@ function ProjectTasksListItem({ project }: IProjectTasksListItem) {
                         hide archived
                     </Button>
                 </>
-            }
-            footer={
-                <Sheet sx={{ bgcolor: 'inherit' }}>
-                    <Typography level="body2">
-                        Project files:
-                    </Typography>
-                    <FilesPanel files={[]} />
-                </Sheet>
             }
         >
             {renderedTasks}

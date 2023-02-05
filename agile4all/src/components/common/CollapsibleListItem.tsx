@@ -42,11 +42,22 @@ export default function CollapsibleListItem(props: ICollapsibleListItem) {
             }}>
                 <List sx={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 2fr))',
-
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                    alignItems: 'stretch',
+                    justifyItems: 'stretch',
+                    // gap: 2,
                 }}>
                     {
-                        props.children.map((node, id) => <ListItem key={id}>{node} </ListItem>)
+                        props.children.map((node, id) => <ListItem
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'stretch',
+                                justifyContent: 'stretch',
+                            }}
+                            key={id}
+                        >
+                            {node}
+                        </ListItem>)
                     }
                 </List>
                 <ListItemDecorator>

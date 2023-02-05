@@ -20,7 +20,7 @@ export default function Modal(props: IModal) {
             sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 999 }}
         >
             <Card sx={{
-                transform: 'translateY(-15%)',
+                transform: 'translateY(-5%)',
                 maxWidth: '90vw',
                 maxHeight: '90vh',
                 gap: 2,

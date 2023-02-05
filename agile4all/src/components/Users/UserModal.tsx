@@ -3,7 +3,7 @@ import { Avatar, Button, Divider, IconButton, List, ListItem, ListItemButton, Li
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { UsersApi } from "../../client";
-import { useAppDispatch, useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector, useCheckAdmin } from "../../hooks";
 import { UUID } from "../../models/common";
 import Project from "../../models/project";
 import User, { UserRole } from "../../models/user";
@@ -34,6 +34,7 @@ export default function UserModal() {
     const dispatch = useAppDispatch();
     const reduxUser = useAppSelector(({ users }) => users.find(({ id }) => id === Number(userId))) || demoUser
     const projects = useAppSelector(({ projects }) => selectProjectsOfUser(projects, reduxUser.id))
+    const isAdmin = useCheckAdmin()
 
 
     const [user, setUser] = useState(reduxUser);
@@ -120,17 +121,20 @@ export default function UserModal() {
                     >
                         Tasks
                     </Button>
-                    <IconButton
-                        onClick={() => setEditMode(!editMode)}
-                    >
-                        <Edit />
-                    </IconButton>
-                    <IconButton color='success' onClick={saveUser}>
-                        <Save />
-                    </IconButton>
-                    <IconButton color='danger' onClick={deleteUser}>
-                        <Delete />
-                    </IconButton>
+                    {isAdmin && <>
+                        <IconButton
+                            onClick={() => setEditMode(!editMode)}
+                        >
+                            <Edit />
+                        </IconButton>
+                        <IconButton color='success' onClick={saveUser}>
+                            <Save />
+                        </IconButton>
+                        <IconButton color='danger' onClick={deleteUser}>
+                            <Delete />
+                        </IconButton>
+                    </>
+                    }
                 </Stack>
             </Sheet>
 

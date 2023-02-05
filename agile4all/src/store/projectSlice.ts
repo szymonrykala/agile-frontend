@@ -48,8 +48,7 @@ export const projectSlice = createSlice({
             const index = projects.findIndex(({ id }) => id === action.payload.projectId)
 
             if (index !== -1) {
-                const userIndex = projects[index].users.findIndex(({ id }) => id === action.payload.userId)
-                projects[index].users.splice(userIndex, 1)
+                projects[index].users =  projects[index].users.filter((user)=> user.id !== action.payload.userId)
             }
             return projects
         },

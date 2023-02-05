@@ -14,7 +14,7 @@ export default function SmallUsersList({ users }: ISmallUsersList) {
             <Typography level='body3'>Members:</Typography>
             <List sx={{ flexDirection: 'row' }}>
                 {
-                    users.map((user, index) =>
+                    Boolean(users) && users.map((user, index) =>
                         <ListItem key={index} >
                             <Tooltip title={`${user.firstName} ${user.lastName}`}>
                                 <ListItemButton component={Link} to={`/app/users/${user.id}`}>
