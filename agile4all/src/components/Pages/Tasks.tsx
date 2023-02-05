@@ -80,11 +80,13 @@ function ProjectTasksListItem({ project }: IProjectTasksListItem) {
     const createTask = useCallback(async (projectId: UUID) => {
         const title = prompt('type a task title');
 
+        const taskUserId = queryParams.userId ? Number(queryParams.userId) : sessionUser?.id || 1
+
         if (title) {
             const task: ICreateTaskData = {
                 name: title,
                 description: "What needs to be done??",
-                userId: sessionUser?.id || -1,
+                userId: taskUserId,
                 projectId: projectId
             }
             await TasksApi.create(task)

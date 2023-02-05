@@ -12,7 +12,6 @@ interface FetchData {
     endpoint: string,
     queryParams?: QueryParams,
     body?: object
-    headers?: object,
     formData?: FormData
 }
 
@@ -51,20 +50,22 @@ abstract class BaseClient {
         window.localStorage.removeItem(this.TOKEN_NAME);
     }
 
-    protected async _fetch(fetchObject: FetchData): Promise<ResponseData> {        
+    protected async _fetch(fetchObject: FetchData): Promise<ResponseData> {
+        let headers: HeadersInit = {
+            'Authorization': this.authToken,
+            'User-Agent': process.env.REACT_APP_NAME as string,
+        }
+
+        if (!fetchObject?.formData) headers['Content-Type'] = "application/json";
+
         const response = await fetch(
             this.BASE_URL + fetchObject.endpoint,
             {
                 method: fetchObject.method,
                 cache: 'no-cache',
                 mode: 'cors',
-                headers: {
-                    'User-Agent': process.env.REACT_APP_NAME as string,
-                    'Content-Type': 'application/json',
-                    'Authorization': this.authToken,
-                    ...fetchObject.headers
-                },
-                body: fetchObject.formData ?? JSON.stringify(fetchObject.body)
+                headers: headers,
+                body: fetchObject?.formData ?? JSON.stringify(fetchObject.body)
             }
         );
         let data: ResponseData = {}

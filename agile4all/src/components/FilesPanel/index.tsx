@@ -40,26 +40,15 @@ export default function FilesPanel(props: IFilesPanel) {
             return;
         }
 
-        const newFile: FileModel = {
-            id: Number(file.name),
-            name: file.name,
-            link: `https://myapp.com/files/${file.name}`,
-            userId: userId,
-            modificationDate: new Date().toLocaleDateString()
-        }
-
         try {
             await FilesApi.uploadFile(file, queryParams)
-            setFiles([...files, newFile])
-            fileInputRef.current.value = ''
-
+            fetchFiles()
         } catch (err) {
-            setFiles([])
-            fileInputRef.current.value = ''
             alert(err)
         }
+        fileInputRef.current.value = ''
 
-    }, [files, setFiles, userId, queryParams]);
+    }, [files, setFiles, userId, queryParams, fetchFiles]);
 
 
 
@@ -96,9 +85,10 @@ export default function FilesPanel(props: IFilesPanel) {
     return (
         <Sheet sx={{
             display: 'flex',
-            alignItems: 'center',
-            gap: 1,
+            alignItems: 'flex-start',
+            gap: 2,
             bgcolor: 'inherit',
+            overflowX: 'auto',
         }}>
             {
                 files.map((file, index) => <File key={index}

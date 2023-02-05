@@ -1,8 +1,9 @@
-import { Sheet, IconButton, Link, Typography } from "@mui/joy";
+import { Sheet, IconButton, Link, Typography, Tooltip } from "@mui/joy";
 import DescriptionIcon from '@mui/icons-material/Description';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import FileModel from "../../models/file";
 import { UUID } from "../../models/common";
+import { Maximize } from "@mui/icons-material";
 
 
 interface IFile {
@@ -49,9 +50,11 @@ export default function File({ data, onDelete }: IFile) {
                     color='warning'
                 />
             </IconButton>
-            <Typography level='body3'>
-                {data.name}
-            </Typography>
+            <Tooltip title={data.name}>
+                <Typography level='body3' sx={{ overflowY: 'clip', maxWidth: '60px', maxHeight: '20px' }}>
+                    {data.name}
+                </Typography>
+            </Tooltip>
 
         </Sheet>
     )
